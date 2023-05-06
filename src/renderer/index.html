@@ -7,12 +7,19 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
     />
-
-    <link href="./assets/styles.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="./src/styles/styles.css" />
   </head>
 
   <body>
-    <script type="module" src="./src/renderer.ts"></script>
+    <script type="module" src="./startPoint.ts"></script>
+    <script src="src/Engine/Main/fps.js"></script>
+
     <h2>Template</h2>
+    <div id="loadingScreen">
+      <p>Loading...</p>
+    </div>
+    <div id="CanvasContainer" width="800" height="600">
+      <canvas id="gameWindow" style="display: none" width="600" height="400"></canvas>
+    </div>
   </body>
 </html>
