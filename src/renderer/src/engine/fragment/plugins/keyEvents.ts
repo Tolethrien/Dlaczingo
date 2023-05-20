@@ -1,24 +1,21 @@
 // import { keyPressed, keyOnce, keyLeave, fixedTime } from "../../Main/Engine.js";
-import { keyTypes, keyHoldList, keyList } from "../../main/inputHandlers";
+import { keyTypes, keyPressed } from "../../main/inputHandlers";
 import Plugin from "./plugin";
-export interface keyEventsType extends KeyEvents {}
 export default class KeyEvents extends Plugin {
+  objectKeyUse: [];
   constructor({ position, size, layer, siblings, referanceName }) {
     super(position, size, siblings, layer, referanceName);
+    this.objectKeyUse = [];
   }
-
-  addKeyPressed(key: keyTypes, callback: () => void) {
-    if (keyList[key] !== undefined || keyHoldList.has(key))
-      console.warn(
-        `You are trying to assign functionality to a button(${key}) that already has another value assigned to it, make sure you are not accidentally overwriting it!`
-      );
-    keyList[key] = callback;
+  onKeyPressed(key: keyTypes, callback: () => void) {
+    if (keyPressed.size !== 0 && keyPressed.has(key)) {
+      callback();
+      keyPressed.delete(key);
+    }
   }
-  addKeyHold(key: keyTypes, callback: () => void) {
-    if (keyList[key] !== undefined || keyHoldList.has(key))
-      console.warn(
-        `You are trying to assign functionality to a button(${key}) that already has another value assigned to it, make sure you are not accidentally overwriting it!`
-      );
-    keyHoldList.set(key, callback);
+  onKeyHold(key: keyTypes, callback: () => void) {
+    if (keyPressed.size !== 0 && keyPressed.has(key)) {
+      callback();
+    }
   }
 }

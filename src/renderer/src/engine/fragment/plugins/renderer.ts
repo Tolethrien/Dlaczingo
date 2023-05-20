@@ -1,10 +1,12 @@
 import { ctx } from "../../main/engine";
 import Plugin from "./plugin";
+import img from "/frame.png";
 type DisplayT = "shape" | "sprite" | "spritesheet";
 type StyleI = SpriteI | ShapeI | SpriteSheetI;
 interface SpriteI {
   sprite: HTMLImageElement;
 }
+
 interface SpriteSheetI {
   spritesheet: HTMLImageElement;
   crop: { x: number; y: number };
@@ -16,17 +18,19 @@ interface ShapeI {
   round?: number;
   stroke?: { size: number; color: [number, number, number] };
 }
-export interface RendererType extends Renderer {}
 
 export default class Renderer extends Plugin {
   protected debug: boolean;
   protected offset: { x: number; y: number; w: number; h: number };
   protected displayType?: DisplayT;
   protected style?: StyleI;
-  constructor({ position, size, siblings, referanceName }) {
-    super(position, size, siblings, referanceName);
+  img: HTMLImageElement;
+  constructor({ position, size, layer, siblings, referanceName }) {
+    super(position, size, siblings, layer, referanceName);
     this.debug = false;
     this.offset = { x: 0, y: 0, w: 0, h: 0 };
+    this.img = new Image();
+    this.img.src = img;
   }
   display(type: DisplayT, config: StyleI) {
     this.displayType = type;
@@ -35,7 +39,9 @@ export default class Renderer extends Plugin {
 
   render() {
     this.displayType === "shape" ? this.renderShape() : this.renderSprite();
-    this.debug && this.renderDebugWindow();
+    // this.debug && this.renderDebugWindow();
+    // ctx.drawImage(this.img, this.position.get().x, this.position.get().y, 80, 80);
+    // rectangle(this.position, this.size, this.offset, this.style);
   }
 
   change(props: Partial<ShapeI>) {

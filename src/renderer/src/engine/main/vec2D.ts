@@ -6,19 +6,31 @@ export default class Vec2D {
   }
   public add(targetVec: Vec2DType | [number, number]) {
     if (Array.isArray(targetVec)) {
-      this.vector = [this.vector[0] + targetVec[0], this.vector[1] + targetVec[1]];
+      this.vector = [
+        Math.round(this.vector[0] + targetVec[0]),
+        Math.round(this.vector[1] + targetVec[1])
+      ];
     } else {
-      this.vector = [this.vector[0] + targetVec.vector[0], this.vector[1] + targetVec.vector[1]];
+      this.vector = [
+        Math.round(this.vector[0] + targetVec.vector[0]),
+        Math.round(this.vector[1] + targetVec.vector[1])
+      ];
     }
   }
   public set(x: number, y: number) {
-    this.vector = [x, y];
+    this.vector = [Math.round(x), Math.round(y)];
   }
   public sub(targetVec: Vec2DType | [number, number]) {
     if (Array.isArray(targetVec)) {
-      this.vector = [this.vector[0] - targetVec[0], this.vector[1] - targetVec[1]];
+      this.vector = [
+        Math.round(this.vector[0] - targetVec[0]),
+        Math.round(this.vector[1] - targetVec[1])
+      ];
     } else {
-      this.vector = [this.vector[0] - targetVec.vector[0], this.vector[1] - targetVec.vector[1]];
+      this.vector = [
+        Math.round(this.vector[0] - targetVec.vector[0]),
+        Math.round(this.vector[1] - targetVec.vector[1])
+      ];
     }
   }
   public get() {

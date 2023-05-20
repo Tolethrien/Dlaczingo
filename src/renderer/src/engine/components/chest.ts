@@ -1,19 +1,17 @@
-import Fragment, { FragmentProps } from "../fragment/fragment";
+import Fragment, { FragmentProps, FragmentType } from "../fragment/fragment";
 import { HitboxesType } from "../fragment/plugins/hitboxes";
 import { keyEventsType } from "../fragment/plugins/keyEvents";
-import { MouseEventsType } from "../fragment/plugins/mouseEvents";
 import { RendererType } from "../fragment/plugins/renderer";
-import { gameObjects } from "../main/engine";
+import { gameObjects, uiObjects } from "../main/engine";
 
-export default class Tester extends Fragment {
+export default class Chest extends Fragment {
   renderer!: RendererType;
-  mouseEvents!: MouseEventsType;
   keyEvents!: keyEventsType;
   hitboxes!: HitboxesType;
+  player?: FragmentType | undefined;
   constructor({ pos, size, layer, tag, targetDistanceMessuring }: FragmentProps) {
     super({ pos, size, layer, tag, targetDistanceMessuring });
     this.attachPlugin("renderer");
-    this.attachPlugin("mouseEvents");
     this.attachPlugin("keyEvents");
     this.attachPlugin("hitboxes");
     this.hitboxes.addHitbox("self", {
@@ -35,24 +33,27 @@ export default class Tester extends Fragment {
         color: [0, 0, 0]
       }
     });
-    this.mouseEvents.addEvent("left", () => this.hitboxes.removeHitbox("self"));
-    this.mouseEvents.addEvent("middle", () => this.renderer.change({ color: [0, 0, 0] }));
-    this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
+    // this.hitboxes.setVisibleAll(true);
+  }
+  setup() {
+    super.setup();
+    this.player = gameObjects.find((e) => e.tag === "gameObject_player");
+    // console.log("🚀 ~ file: chest.ts:43 ~ Chest ~ setup ~ player:", this.player);
   }
   update() {
     super.update();
-    this.test() &&
-      this.keyEvents.onKeyPressed("h", () => {
-        console.log(this.tag);
-      });
   }
   test() {
     if (
       this.hitboxes.get("self") &&
-      gameObjects[2].hitboxes.get("self") &&
-      this.hitboxes.onCollide(this.hitboxes.get("self")!, gameObjects[2].hitboxes.get("self")!)
+      this.player?.hitboxes.get("self") &&
+      this.hitboxes.onWillCollide(
+        this.hitboxes.get("self")!,
+        this.player!.hitboxes.get("self")!,
+        [30, 30, 0, 0]
+      )
     ) {
-      return true;
+      console.log("koliduje");
     }
   }
 }

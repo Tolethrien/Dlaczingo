@@ -10,4 +10,10 @@ declare global {
     camera: uknown;
   }
   const FPSMeter: () => void;
+  declare module "*.png" {
+    export default string;
+  }
+  declare module "*.mp3" {
+    export default string;
+  }
 }

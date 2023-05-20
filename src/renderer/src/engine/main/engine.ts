@@ -1,7 +1,7 @@
-import { zoom } from "../components/camera";
-import type { FragmentType } from "../fragment/fragment";
-import type { EngineConfig, FPSM } from "./engine.d";
-import { keyHoldEventUpdate, keysHandles, mouseHandlers } from "./inputHandlers";
+import { CameraType } from "../components/camera";
+// import type { FragmentType } from "../fragment/fragment";
+import { keysHandles, mouseHandlers } from "./inputHandlers";
+import { loadFile } from "./utils";
 
 (function () {
   if (!document.getElementById("CanvasContainer")) throw new Error("No Cante");
@@ -16,7 +16,7 @@ export const ctx = canvas.getContext("2d")!;
 export const gameObjects: FragmentType[] = [];
 export const mapObjects: FragmentType[] = [];
 export const uiObjects: FragmentType[] = [];
-
+export const cameraObjects: Map<string, CameraType> = new Map();
 export default class Engine {
   private preload: EngineConfig["preload"];
   private update: EngineConfig["update"];
@@ -25,7 +25,6 @@ export default class Engine {
   private fps: EngineConfig["fps"];
   private oldTimeStamp: number;
   private meter: FPSM;
-
   constructor({ update, render, fps, setup, preload }: EngineConfig) {
     this.preload = preload;
     this.update = update;
@@ -35,8 +34,6 @@ export default class Engine {
     this.meter = new FPSMeter() as FPSM;
     this.oldTimeStamp = 0;
     window.engine = this;
-    mouseHandlers();
-    keysHandles();
     this.preloader();
   }
 
@@ -47,22 +44,42 @@ export default class Engine {
     canvas.style.display = "block";
     ctx.textBaseline = "bottom";
     ctx.textAlign = "start";
+    keysHandles();
     this.setup();
+    mouseHandlers(canvas, cameraObjects.get("main"));
     this.loop();
     this.fps ? this.meter.show() : this.meter.hide();
   };
 
   private loop() {
+    const x = performance.now();
     fixedTime = Number(((performance.now() - this.oldTimeStamp) / 1000).toFixed(4));
     this.oldTimeStamp = Number(performance.now().toFixed(4));
-    keyHoldEventUpdate();
     this.update();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
-    ctx.setTransform(zoom, 0, 0, zoom, 0, 0);
+    ctx.setTransform(
+      cameraObjects.get("main")?.zoom ?? 1,
+      0,
+      0,
+      cameraObjects.get("main")?.zoom ?? 1,
+      0,
+      0
+    );
     this.render();
     ctx.restore();
     this.meter.tick();
+    tick(x);
     window.requestAnimationFrame(() => this.loop());
   }
 }
+const tick = (x: number) => {
+  ctx.font = "20px Arial";
+  ctx.fillText(
+    `MS: ${(performance.now() - x).toFixed(2)}, FPS: ${(1000 / (performance.now() - x)).toFixed(
+      0
+    )}`,
+    400,
+    25
+  );
+};

@@ -1,11 +1,12 @@
 import { mouseProxymityList, getMousePosition, mousePressed } from "../../main/inputHandlers";
 import Plugin from "./plugin";
-export interface MouseEventsType extends MouseEvents {}
 
 export default class MouseEvents extends Plugin {
   protected events: Map<string, undefined | (() => void)>;
+  private mousePositionType: "fixed" | "translated";
   constructor({ position, size, layer, siblings, referanceName }) {
     super(position, size, siblings, layer, referanceName);
+    this.mousePositionType = layer === "gameObjects" ? "translated" : "fixed";
     this.events = new Map([
       ["left", undefined],
       ["right", undefined],
@@ -22,7 +23,6 @@ export default class MouseEvents extends Plugin {
   }
   onClickEvent() {
     this.events.get("left")?.();
-    this.events.get("middle")?.();
   }
   onClickMiddleEvent() {
     this.events.get("middle")?.();
@@ -40,10 +40,10 @@ export default class MouseEvents extends Plugin {
 
   mouseCollide() {
     return (
-      getMousePosition("translated").x >= this.position.get().x &&
-      getMousePosition("translated").x <= this.position.get().x + this.size.get().x &&
-      getMousePosition("translated").y >= this.position.get().y &&
-      getMousePosition("translated").y <= this.position.get().y + this.size.get().y &&
+      getMousePosition(this.mousePositionType).x >= this.position.get().x &&
+      getMousePosition(this.mousePositionType).x <= this.position.get().x + this.size.get().x &&
+      getMousePosition(this.mousePositionType).y >= this.position.get().y &&
+      getMousePosition(this.mousePositionType).y <= this.position.get().y + this.size.get().y &&
       true
     );
   }
