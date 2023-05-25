@@ -9,7 +9,6 @@ export default class Fragment {
   protected attachedPlugins: Plugin[];
   protected visible: boolean;
   protected updated: boolean;
-  [index: string]: any;
   protected layer: FragmentProps["layer"];
   public tag: FragmentProps["tag"];
   protected id: string;
@@ -65,9 +64,7 @@ export default class Fragment {
     }
   }
 
-  attachPlugin(plugin: pluginListT, name?: string) {
-    // const { default: myClass } = await import("./plugins/renderer");
-    // const myCla = new myClass();
+  attachPlugin(plugin: pluginListT, options?: { bindThis?: boolean; overrideName?: string }) {
     this.attachedPlugins.push(
       new pluginList[this.pluginNameToUpper(plugin)]({
         position: this.position,
@@ -75,12 +72,19 @@ export default class Fragment {
         layer: this.layer,
         id: this.id,
         siblings: this.attachedPlugins,
-        referanceName: name ? name : plugin
+        referanceName: options?.overrideName ? options.overrideName : plugin
       })
     );
-    this[name ? name : plugin] = this.attachedPlugins[this.attachedPlugins.length - 1];
+    if (options?.bindThis !== false) {
+      this[options?.overrideName ? options.overrideName : plugin] =
+        this.attachedPlugins[this.attachedPlugins.length - 1];
+    }
   }
-
+  getPlugin<T>(name: pluginListT) {
+    return this.attachedPlugins.find(
+      (plugin) => plugin.constructor.name === this.pluginNameToUpper(name)
+    ) as T | undefined;
+  }
   private createRandomId() {
     return "_" + Math.random().toString(36).substring(2, 9);
   }

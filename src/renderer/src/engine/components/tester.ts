@@ -1,8 +1,4 @@
-import Fragment, { FragmentProps } from "../fragment/fragment";
-import { HitboxesType } from "../fragment/plugins/hitboxes";
-import { keyEventsType } from "../fragment/plugins/keyEvents";
-import { MouseEventsType } from "../fragment/plugins/mouseEvents";
-import { RendererType } from "../fragment/plugins/renderer";
+import Fragment from "../fragment/fragment";
 import { gameObjects } from "../main/engine";
 
 export default class Tester extends Fragment {
@@ -50,7 +46,7 @@ export default class Tester extends Fragment {
     if (
       this.hitboxes.get("self") &&
       gameObjects[2].hitboxes.get("self") &&
-      this.hitboxes.onCollide(this.hitboxes.get("self")!, gameObjects[2].hitboxes.get("self")!)
+      this.hitboxes.isColliding(this.hitboxes.get("self")!, gameObjects[2].hitboxes.get("self")!)
     ) {
       return true;
     }

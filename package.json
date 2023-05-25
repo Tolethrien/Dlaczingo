@@ -1,9 +1,9 @@
 {
   "name": "dlaczingo",
   "version": "1.0.0",
-  "description": "A minimal Electron application with TypeScript",
+  "description": "Main Game Engine Project",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "Dlaczingo INC.",
   "homepage": "https://www.electronjs.org",
   "scripts": {
     "format": "prettier --write .",

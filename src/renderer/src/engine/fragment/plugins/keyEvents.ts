@@ -13,9 +13,32 @@ export default class KeyEvents extends Plugin {
       keyPressed.delete(key);
     }
   }
-  onKeyHold(key: keyTypes, callback: () => void) {
-    if (keyPressed.size !== 0 && keyPressed.has(key)) {
-      callback();
+  onKeyHold(keys: keyTypes[], callback: () => void, errorKeys?: keyTypes[]) {
+    if (keyPressed.size !== 0 && keys.every((e) => (keyPressed.has(e) ? true : false))) {
+      if (errorKeys && errorKeys.length !== 0) {
+        if (errorKeys.every((e) => (keyPressed.has(e) ? false : true))) {
+          callback();
+        }
+      } else {
+        callback();
+      }
     }
+  }
+  isKeyHolded(key: keyTypes) {
+    if (keyPressed.has(key)) return true;
+    return false;
+  }
+  isNotHolded(errorKeys?: keyTypes[]) {
+    if (errorKeys && errorKeys.length !== 0) {
+      if (errorKeys.every((e) => (keyPressed.has(e) ? false : true))) {
+        return true;
+      } else return false;
+    } else {
+      return true;
+    }
+  }
+  keyAny() {
+    if (keyPressed.size !== 0) return true;
+    return false;
   }
 }

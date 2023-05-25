@@ -1,8 +1,7 @@
-export function loadFile(
-  fileType: "img" | "audio",
-  file: string
-): HTMLAudioElement | HTMLImageElement;
-export function loadFile<T extends HTMLAudioElement | HTMLImageElement>(
+// load File
+
+export function loadFile(fileType: "img" | "audio", file: string): AudioFileType | ImageFileType;
+export function loadFile<T extends AudioFileType | ImageFileType>(
   fileType: "img" | "audio",
   file: string
 ): T;
@@ -12,13 +11,13 @@ export function loadFile(fileType: "img" | "audio", file: string) {
     case "img": {
       const image = new Image();
       image.src = file;
-      return image;
+      return image as ImageFileType;
     }
     case "audio": {
       const audio = new Audio();
       audio.src = file;
-      return audio;
+      return audio as AudioFileType;
     }
   }
 }
-export default loadFile;
+//=====================================

@@ -1,14 +1,13 @@
 import { ctx } from "../../main/engine";
 import Plugin from "./plugin";
-import img from "/frame.png";
 type DisplayT = "shape" | "sprite" | "spritesheet";
 type StyleI = SpriteI | ShapeI | SpriteSheetI;
 interface SpriteI {
-  sprite: HTMLImageElement;
+  sprite: ImageFileType;
 }
 
-interface SpriteSheetI {
-  spritesheet: HTMLImageElement;
+export interface SpriteSheetI {
+  spritesheet: ImageFileType;
   crop: { x: number; y: number };
   cropSize: { width: number; height: number };
 }
@@ -23,14 +22,11 @@ export default class Renderer extends Plugin {
   protected debug: boolean;
   protected offset: { x: number; y: number; w: number; h: number };
   protected displayType?: DisplayT;
-  protected style?: StyleI;
-  img: HTMLImageElement;
+  style?: StyleI;
   constructor({ position, size, layer, siblings, referanceName }) {
     super(position, size, siblings, layer, referanceName);
     this.debug = false;
     this.offset = { x: 0, y: 0, w: 0, h: 0 };
-    this.img = new Image();
-    this.img.src = img;
   }
   display(type: DisplayT, config: StyleI) {
     this.displayType = type;
@@ -39,7 +35,7 @@ export default class Renderer extends Plugin {
 
   render() {
     this.displayType === "shape" ? this.renderShape() : this.renderSprite();
-    // this.debug && this.renderDebugWindow();
+    this.debug && this.renderDebugWindow();
     // ctx.drawImage(this.img, this.position.get().x, this.position.get().y, 80, 80);
     // rectangle(this.position, this.size, this.offset, this.style);
   }
@@ -58,37 +54,32 @@ export default class Renderer extends Plugin {
   renderSprite() {
     //render spritesheet
     if ("spritesheet" in this.style!) {
-      ctx.save();
       ctx.drawImage(
-        this.style.spritesheet,
+        this.style.spritesheet as HTMLImageElement,
         this.style.crop.x,
         this.style.crop.y,
         this.style.cropSize.width,
         this.style.cropSize.height,
-        this.position.get().x + this.offset.x,
-        this.position.get().y + this.offset.y,
+        this.position.getRound().x + this.offset.x,
+        this.position.getRound().y + this.offset.y,
         this.size.get().x + this.offset.w,
         this.size.get().y + this.offset.h
       );
-      ctx.restore();
     }
     //render Static Sprite
     if ("sprite" in this.style!) {
-      ctx.save();
       ctx.drawImage(
-        this.style!.sprite,
-        this.position.get().x + this.offset.x,
-        this.position.get().y + this.offset.y,
+        this.style!.sprite as HTMLImageElement,
+        this.position.getRound().x + this.offset.x,
+        this.position.getRound().y + this.offset.y,
         this.size.get().x + this.offset.w,
         this.size.get().y + this.offset.h
       );
-      ctx.restore();
     }
   }
 
   renderShape() {
     if ("color" in this.style!) {
-      ctx.save();
       // drawing fill rect
       // ctx.filter = "brightness(350%)";
       this.style!.color &&
@@ -103,8 +94,8 @@ export default class Renderer extends Plugin {
         })`),
         ctx.beginPath(),
         ctx.roundRect(
-          this.position.get().x + +this.offset.x + (this.style.stroke ? 1 : 0),
-          this.position.get().y + this.offset.y + (this.style.stroke ? 1 : 0),
+          this.position.getRound().x + +this.offset.x + (this.style.stroke ? 1 : 0),
+          this.position.getRound().y + this.offset.y + (this.style.stroke ? 1 : 0),
           this.size.get().x + this.offset.w - (this.style.stroke ? 2 : 0),
           this.size.get().y + this.offset.h - (this.style.stroke ? 2 : 0),
           this.style.round ? this.style.round : 0
@@ -125,15 +116,14 @@ export default class Renderer extends Plugin {
         })`),
         ctx.beginPath(),
         ctx.roundRect(
-          this.position.get().x + this.offset.x + this.style.stroke.size / 2,
-          this.position.get().y + this.offset.y + this.style.stroke.size / 2,
+          this.position.getRound().x + this.offset.x + this.style.stroke.size / 2,
+          this.position.getRound().y + this.offset.y + this.style.stroke.size / 2,
           this.size.get().x + this.offset.w - this.style.stroke.size,
           this.size.get().y + this.offset.h - this.style.stroke.size,
           this.style.round ? this.style.round : 0
         ),
         ctx.stroke(),
         ctx.closePath());
-      ctx.restore();
     }
   }
   renderDebugWindow() {
@@ -142,15 +132,15 @@ export default class Renderer extends Plugin {
     ctx.strokeStyle = "rgb(0, 255, 0)";
     ctx.fillStyle = "rgb(0, 255, 0)";
     ctx.roundRect(
-      this.position.get().x + this.offset.x + 1,
-      this.position.get().y + this.offset.y + 1,
+      this.position.getRound().x + this.offset.x + 1,
+      this.position.getRound().y + this.offset.y + 1,
       this.size.get().x + this.offset.w - 2,
       this.size.get().y + this.offset.h - 2,
       0
     );
     ctx.fillRect(
-      this.position.get().x + this.offset.x + this.size.get().x / 2 - 1,
-      this.position.get().y + this.offset.y + this.size.get().y / 2 - 1,
+      this.position.getRound().x + this.offset.x + this.size.get().x / 2 - 1,
+      this.position.getRound().y + this.offset.y + this.size.get().y / 2 - 1,
       2,
       2
     );
@@ -158,8 +148,8 @@ export default class Renderer extends Plugin {
     ctx.font = `${this.size.get().x / 2 - this.size.get().x / 4}px Arial`;
     ctx.fillText(
       "ID",
-      this.position.get().x + this.offset.x + 4,
-      this.position.get().y + this.offset.y + this.size.get().x / 2 - this.size.get().x / 4,
+      this.position.getRound().x + this.offset.x + 4,
+      this.position.getRound().y + this.offset.y + this.size.get().x / 2 - this.size.get().x / 4,
       this.size.get().x - this.size.get().x / 8
     );
     ctx.closePath();

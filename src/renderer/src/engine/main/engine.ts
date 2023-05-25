@@ -1,7 +1,5 @@
 import { CameraType } from "../components/camera";
-// import type { FragmentType } from "../fragment/fragment";
 import { keysHandles, mouseHandlers } from "./inputHandlers";
-import { loadFile } from "./utils";
 
 (function () {
   if (!document.getElementById("CanvasContainer")) throw new Error("No Cante");
@@ -13,10 +11,12 @@ export const canvasContainer = document.getElementById("CanvasContainer")!;
 const loadingScreen = document.getElementById("loadingScreen")!;
 export const canvas = document.getElementById("gameWindow") as HTMLCanvasElement;
 export const ctx = canvas.getContext("2d")!;
+const messureTime = document.getElementById("fps-output");
 export const gameObjects: FragmentType[] = [];
 export const mapObjects: FragmentType[] = [];
 export const uiObjects: FragmentType[] = [];
 export const cameraObjects: Map<string, CameraType> = new Map();
+
 export default class Engine {
   private preload: EngineConfig["preload"];
   private update: EngineConfig["update"];
@@ -70,16 +70,9 @@ export default class Engine {
     ctx.restore();
     this.meter.tick();
     tick(x);
-    window.requestAnimationFrame(() => this.loop());
+    requestAnimationFrame(() => this.loop());
   }
 }
 const tick = (x: number) => {
-  ctx.font = "20px Arial";
-  ctx.fillText(
-    `MS: ${(performance.now() - x).toFixed(2)}, FPS: ${(1000 / (performance.now() - x)).toFixed(
-      0
-    )}`,
-    400,
-    25
-  );
+  messureTime!.innerText = `${(performance.now() - x).toFixed(2)}MS`;
 };

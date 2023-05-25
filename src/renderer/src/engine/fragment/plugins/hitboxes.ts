@@ -79,14 +79,12 @@ export default class Hitboxes extends Plugin {
   }
 
   renderHitbox(position: hitboxValues[2]) {
-    ctx.save();
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgb(255, 255, 0)";
     ctx.beginPath();
     ctx.strokeRect(position[0], position[1], position[2], position[3]);
     ctx.stroke();
     ctx.closePath();
-    ctx.restore();
   }
 
   isColliding(hitbox: hitboxValues, target: hitboxValues) {
@@ -99,14 +97,20 @@ export default class Hitboxes extends Plugin {
       true
     );
   }
+  /**array takes settings of individual hitbox:
+   * [0]: active, [1]: visible [2]: array of position and size [3]: array of offset
+   */
   willBeColliding(
     hitbox: hitboxValues,
     target: hitboxValues,
     modifier: [number, number, number, number]
   ) {
     if (!hitbox[0] || hitbox === target) return;
+
     return (
+      //player.y + player.h + 5 <= target.y
       hitbox[2][1] + hitbox[2][3] + modifier[2] > target[2][1] &&
+      //player.Y - 5 <= target.y + target.h
       hitbox[2][1] - modifier[0] < target[2][1] + target[2][3] &&
       hitbox[2][0] + hitbox[2][2] + modifier[1] > target[2][0] &&
       hitbox[2][0] - modifier[3] < target[2][0] + target[2][2] &&

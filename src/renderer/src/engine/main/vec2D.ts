@@ -6,15 +6,9 @@ export default class Vec2D {
   }
   public add(targetVec: Vec2DType | [number, number]) {
     if (Array.isArray(targetVec)) {
-      this.vector = [
-        Math.round(this.vector[0] + targetVec[0]),
-        Math.round(this.vector[1] + targetVec[1])
-      ];
+      this.vector = [this.vector[0] + targetVec[0], this.vector[1] + targetVec[1]];
     } else {
-      this.vector = [
-        Math.round(this.vector[0] + targetVec.vector[0]),
-        Math.round(this.vector[1] + targetVec.vector[1])
-      ];
+      this.vector = [this.vector[0] + targetVec.vector[0], this.vector[1] + targetVec.vector[1]];
     }
   }
   public set(x: number, y: number) {
@@ -22,23 +16,21 @@ export default class Vec2D {
   }
   public sub(targetVec: Vec2DType | [number, number]) {
     if (Array.isArray(targetVec)) {
-      this.vector = [
-        Math.round(this.vector[0] - targetVec[0]),
-        Math.round(this.vector[1] - targetVec[1])
-      ];
+      this.vector = [this.vector[0] - targetVec[0], this.vector[1] - targetVec[1]];
     } else {
-      this.vector = [
-        Math.round(this.vector[0] - targetVec.vector[0]),
-        Math.round(this.vector[1] - targetVec.vector[1])
-      ];
+      this.vector = [this.vector[0] - targetVec.vector[0], this.vector[1] - targetVec.vector[1]];
     }
   }
   public get() {
     return { x: this.vector[0], y: this.vector[1] };
   }
-  public normalize() {
+  public getRound() {
+    return { x: Math.round(this.vector[0]), y: Math.round(this.vector[1]) };
+  }
+  public normalize(): [number, number] {
     const length = Math.sqrt(this.vector.reduce((acc, val) => acc + val ** 2, 0));
-    return this.vector.map((val) => Number(val / length).toFixed(2));
+    // console.log(Math.sqrt(this.vector[0] ** 2 + this.vector[1] ** 2));
+    return [this.vector[0] / length, this.vector[1] / length];
   }
   public scale(scalarX: number, scalarY?: number) {
     if (!scalarY) this.vector = [this.vector[0] * scalarX, this.vector[1] * scalarX];

@@ -1,20 +1,16 @@
-import Fragment, { FragmentProps, FragmentType } from "../fragment/fragment";
-import { HitboxesType } from "../fragment/plugins/hitboxes";
-import { keyEventsType } from "../fragment/plugins/keyEvents";
-import { RendererType } from "../fragment/plugins/renderer";
+import Fragment from "../fragment/fragment";
 import { gameObjects, uiObjects } from "../main/engine";
 
 export default class Chest extends Fragment {
-  renderer!: RendererType;
+  // renderer!: RendererType;
   keyEvents!: keyEventsType;
-  hitboxes!: HitboxesType;
   player?: FragmentType | undefined;
   constructor({ pos, size, layer, tag, targetDistanceMessuring }: FragmentProps) {
     super({ pos, size, layer, tag, targetDistanceMessuring });
-    this.attachPlugin("renderer");
+    this.attachPlugin("renderer", { bindThis: false });
     this.attachPlugin("keyEvents");
-    this.attachPlugin("hitboxes");
-    this.hitboxes.addHitbox("self", {
+    this.attachPlugin("hitboxes", { bindThis: false });
+    this.getPlugin<HitboxesType>("hitboxes")?.addHitbox("self", {
       active: true,
       offset: {
         x: 0,
@@ -23,8 +19,7 @@ export default class Chest extends Fragment {
         h: 0
       }
     });
-    // this.hitboxes.setVisibleAll(true);
-    this.renderer.display("shape", {
+    this.getPlugin<RendererType>("renderer")?.display("shape", {
       color: [200, 100, 100],
       alpha: 0.6,
       round: 15,
@@ -33,7 +28,8 @@ export default class Chest extends Fragment {
         color: [0, 0, 0]
       }
     });
-    // this.hitboxes.setVisibleAll(true);
+    this.getPlugin<HitboxesType>("hitboxes")?.setVisibleAll(true);
+    // this.renderer.debug = true;
   }
   setup() {
     super.setup();
@@ -43,17 +39,17 @@ export default class Chest extends Fragment {
   update() {
     super.update();
   }
-  test() {
-    if (
-      this.hitboxes.get("self") &&
-      this.player?.hitboxes.get("self") &&
-      this.hitboxes.onWillCollide(
-        this.hitboxes.get("self")!,
-        this.player!.hitboxes.get("self")!,
-        [30, 30, 0, 0]
-      )
-    ) {
-      console.log("koliduje");
-    }
-  }
+  // test() {
+  //   if (
+  //     this.hitboxes.get("self") &&
+  //     this.player?.hitboxes.get("self") &&
+  //     this.hitboxes.willBeColliding(
+  //       this.hitboxes.get("self")!,
+  //       this.player!.hitboxes.get("self")!,
+  //       [30, 30, 0, 0]
+  //     )
+  //   ) {
+  //     console.log("koliduje");
+  //   }
+  // }
 }

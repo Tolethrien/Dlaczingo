@@ -1,4 +1,5 @@
 import Fragment from "./src/engine/fragment/fragment";
+import Vec2D from "./src/engine/main/vec2D";
 export declare global {
   declare interface EngineConfig {
     update: () => void;
@@ -24,4 +25,11 @@ export declare global {
     tag: string;
     targetDistanceMessuring?: string;
   }
+  declare interface AudioFileType {
+    play: () => void;
+    loop: boolean;
+    volume: number;
+  }
+  declare interface ImageFileType {}
+  declare interface Vec2DType extends Vec2D {}
 }

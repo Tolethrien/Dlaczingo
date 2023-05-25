@@ -1,4 +1,3 @@
-import type { EngineConfig } from "./engine";
 import Engine, { cameraObjects, ctx, gameObjects, uiObjects } from "./src/engine/main/engine";
 import Tester from "./src/engine/components/tester";
 import Chest from "./src/engine/components/chest";
@@ -13,7 +12,7 @@ function setup() {
   //   pos: { x: -10, y: 150 },
   //   size: { width: 80, height: 80 }
   // });
-  // Array(1500)
+  // Array(1000)
   //   .fill(null)
   //   .forEach(
   //     (e) =>
@@ -29,15 +28,16 @@ function setup() {
     layer: "gameObjects",
     tag: "front",
     targetDistanceMessuring: "gameObject_player",
-    pos: { x: 130, y: 60 },
+    pos: { x: 130, y: 63 },
     size: { width: 80, height: 80 }
   });
-  new Player({
-    layer: "gameObjects",
-    tag: "gameObject_player",
-    pos: { x: 140, y: 40 },
-    size: { width: 80, height: 80 }
-  });
+  // new Chest({
+  //   layer: "gameObjects",
+  //   tag: "front",
+  //   targetDistanceMessuring: "gameObject_player",
+  //   pos: { x: -40, y: 63 },
+  //   size: { width: 80, height: 80 }
+  // });
   new UIElement({
     layer: "uiObjects",
     tag: "ui",
@@ -62,8 +62,14 @@ function setup() {
       followTag: "gameObject_player"
     })
   );
+  new Player({
+    layer: "gameObjects",
+    tag: "gameObject_player",
+    pos: { x: 120, y: 160 },
+    size: { width: 80, height: 80 }
+  });
   cameraObjects.get("main")?.setZoom(1);
-
+  cameraObjects.forEach((e) => e.setup());
   gameObjects.forEach((e) => e.setup());
   uiObjects.forEach((e) => e.setup());
 }
@@ -81,10 +87,10 @@ function render() {
 }
 
 const config: EngineConfig = {
+  preload,
+  setup,
   update,
   render,
-  setup,
-  preload,
   fps: true
 };
 
