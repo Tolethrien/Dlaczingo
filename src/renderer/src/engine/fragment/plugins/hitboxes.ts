@@ -1,5 +1,5 @@
 import Plugin from "./plugin";
-import { ctx } from "../../main/engine";
+import { renderHitboxFrame } from "../../main/shapes";
 
 /**array takes settings of individual hitbox:
  * [0]: active, [1]: visible [2]: array of position and size [3]: array of offset
@@ -26,7 +26,7 @@ export default class Hitboxes extends Plugin {
   }
 
   render() {
-    this.hitboxes.forEach((hitbox) => hitbox[1] && this.renderHitbox(hitbox[2]));
+    this.hitboxes.forEach((hitbox) => hitbox[1] && renderHitboxFrame(hitbox[2]));
   }
 
   addHitbox(name: string, { active, offset, visible }: addHitboxProps) {
@@ -76,15 +76,6 @@ export default class Hitboxes extends Plugin {
       this.size.get().x + hitbox[3][2],
       this.size.get().y + hitbox[3][3]
     ];
-  }
-
-  renderHitbox(position: hitboxValues[2]) {
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgb(255, 255, 0)";
-    ctx.beginPath();
-    ctx.strokeRect(position[0], position[1], position[2], position[3]);
-    ctx.stroke();
-    ctx.closePath();
   }
 
   isColliding(hitbox: hitboxValues, target: hitboxValues) {

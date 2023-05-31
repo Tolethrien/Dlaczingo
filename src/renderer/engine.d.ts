@@ -1,35 +1,64 @@
 import Fragment from "./src/engine/fragment/fragment";
+import UIElement from "./src/engine/ui/uiElement";
 import Vec2D from "./src/engine/main/vec2D";
 export declare global {
-  declare interface EngineConfig {
+  interface EngineConfig {
     update: () => void;
     setup: () => void;
     preload: () => void;
     render: () => void;
     fps: boolean;
   }
-  declare interface FPSM {
+  interface FPSM {
     tick: () => void;
     show: () => void;
     hide: () => void;
   }
-  declare interface SataProps {
-    value: string;
-    type: number;
-  }
-  declare interface FragmentType extends Fragment {}
-  declare interface FragmentProps {
+
+  interface FragmentType extends Fragment {}
+  interface UIElementType extends UIElement {}
+  interface FragmentProps {
     pos: { x: number; y: number };
     size: { width: number; height: number };
-    layer: "gameObjects" | "uiObjects" | "mapObjects" | "cameraObject" | "independent";
-    tag: string;
+    layer: "gameObjects" | "mapObjects" | "cameraObject" | "independent";
+    tags: string[];
     targetDistanceMessuring?: string;
   }
-  declare interface AudioFileType {
+  interface UIElementProps {
+    tags: string[];
+    position: { x: number; y: number; relatedTo: Vec2DType };
+    size: { width: number; height: number };
+  }
+  interface AudioFileType {
     play: () => void;
     loop: boolean;
     volume: number;
   }
-  declare interface ImageFileType {}
-  declare interface Vec2DType extends Vec2D {}
+  interface ImageFileType {}
+  interface Vec2DType extends Vec2D {}
+  interface ShapeSprite {
+    sprite: ImageFileType;
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+  }
+  interface ShapeSpritesheet {
+    spritesheet: ImageFileType;
+    crop: { x: number; y: number };
+    cropSize: { width: number; height: number };
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+  }
+  interface ShapeRect {
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+    fill?: { color: [number, number, number]; alpha?: number };
+    round?: number;
+    stroke?: { size: number; color: [number, number, number] };
+  }
 }

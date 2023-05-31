@@ -1,11 +1,11 @@
 import Fragment from "../fragment/fragment";
-import { ctx, canvas, fixedTime, gameObjects } from "../main/engine";
+import { ctx, canvas, gameObjects } from "../main/engine";
 import Vec2D, { Vec2DType } from "../main/vec2D";
 interface CameraProps {
   type: "follow" | "free";
   isBounded: boolean;
   boundaries: object;
-  tag: FragmentProps["tag"];
+  tags: FragmentProps["tags"];
   followTag: string;
   offset?: { x: number; y: number };
 }
@@ -19,11 +19,11 @@ export default class Camera extends Fragment {
   keyEvents?: keyEventsType;
   movementRestriction?: MovementRestrictionType;
   zoom: number;
-  followedTag: FragmentProps["tag"];
+  followedTag: FragmentProps["tags"][0];
   private selfPos?: Vec2DType;
-  constructor({ type, isBounded, boundaries, followTag, tag, offset }: CameraProps) {
+  constructor({ type, isBounded, boundaries, followTag, tags, offset }: CameraProps) {
     super({
-      tag,
+      tags,
       pos: { x: 40, y: 10 },
       layer: "independent",
       size: { height: 80, width: 80 }
@@ -53,7 +53,7 @@ export default class Camera extends Fragment {
     window.camera = this;
   }
   setup() {
-    this.ObjectToFollow = gameObjects.find((e) => e.tag === this.followedTag);
+    this.ObjectToFollow = gameObjects.find((e) => e.tags.includes(this.followedTag));
     if (!this.ObjectToFollow) throw new Error("no obj");
   }
   off() {

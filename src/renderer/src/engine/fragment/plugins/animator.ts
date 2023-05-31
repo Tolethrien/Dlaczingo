@@ -1,11 +1,11 @@
 import Plugin from "./plugin";
-import { SpriteSheetI } from "./renderer";
+import { SpritesheetConfiguration } from "./renderer";
 
 interface AnimationDataI {
   [key: string]: { numberOfFrames: number; rowInSpritesheet: number; startAnimation?: boolean };
 }
 export default class Animator extends Plugin {
-  private renderer!: SpriteSheetI;
+  private rendererConfig!: SpritesheetConfiguration;
   protected animationData!: AnimationDataI;
   private frameCounter: number;
   animationSpeed: number;
@@ -22,11 +22,12 @@ export default class Animator extends Plugin {
     this.stopOnAnimationFinished = false;
   }
   setup() {
-    if (this.renderer) return;
-    this.renderer = (this.siblings.find((e) => e.constructor.name === "Renderer") as RendererType)
-      ?.style as SpriteSheetI;
-    if (!this.renderer) throw new Error("animator cant find renderer");
-    if (!("spritesheet" in this.renderer))
+    if (this.rendererConfig) return;
+    this.rendererConfig = (
+      this.siblings.find((e) => e.constructor.name === "Renderer") as RendererType
+    )?.renderConfig as SpritesheetConfiguration;
+    if (!this.rendererConfig) throw new Error("animator cant find renderer");
+    if (!("spritesheet" in this.rendererConfig))
       throw new Error("renderer dosnt have a valid spritesheet");
   }
   /**
@@ -34,10 +35,10 @@ export default class Animator extends Plugin {
    * @Docs https://engine-docs-git-develop-tolethrien.vercel.app/docs/fragment/fragment#dodawaniePluginow
    */
   overrideRenderer(newRend: RendererType) {
-    if (!newRend.style) throw new Error("animator cant find renderer");
-    if (!("spritesheet" in newRend.style))
+    if (!newRend.renderConfig) throw new Error("animator cant find renderer");
+    if (!("spritesheet" in newRend.renderConfig))
       throw new Error("renderer dosnt have a valid spritesheet");
-    this.renderer = newRend.style as SpriteSheetI;
+    this.rendererConfig = newRend.renderConfig as SpritesheetConfiguration;
   }
   /**
    * give animator object with all animation data like state names, number of frames in state etc.
@@ -72,13 +73,14 @@ export default class Animator extends Plugin {
           this.frameCounter <
           this.animationSpeed * this.animationData[this.state].numberOfFrames
         ) {
-          this.renderer.crop.x += this.renderer.cropSize.width;
-          this.renderer.crop.y =
-            this.renderer.cropSize.height * (this.animationData[this.state].rowInSpritesheet - 1);
+          this.rendererConfig.crop.x += this.rendererConfig.cropSize.width;
+          this.rendererConfig.crop.y =
+            this.rendererConfig.cropSize.height *
+            (this.animationData[this.state].rowInSpritesheet - 1);
         }
         // if frame is last - start all over or stop animating
         else {
-          this.stopOnAnimationFinished ? this.stop() : (this.renderer.crop.x = 0);
+          this.stopOnAnimationFinished ? this.stop() : (this.rendererConfig.crop.x = 0);
         }
       }
     }
@@ -99,7 +101,7 @@ export default class Animator extends Plugin {
   /**rewind animation to begining */
   rewind() {
     this.frameCounter = 0;
-    this.renderer.crop.x = 0;
+    this.rendererConfig.crop.x = 0;
   }
   /**changing animation */
   changeState(newState: string) {

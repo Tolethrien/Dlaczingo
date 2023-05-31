@@ -4,6 +4,7 @@ import Chest from "./src/engine/components/chest";
 import Player from "./src/engine/components/player";
 import Camera from "./src/engine/components/camera";
 import UIElement from "./src/engine/ui/uiElement";
+import UIFrame from "./src/engine/components/uiBackground";
 function preload() {}
 function setup() {
   // new Chest({
@@ -12,38 +13,57 @@ function setup() {
   //   pos: { x: -10, y: 150 },
   //   size: { width: 80, height: 80 }
   // });
-  // Array(1000)
+  // Array(2000)
   //   .fill(null)
-  //   .forEach(
-  //     (e) =>
-  //       new Tester({
-  //         layer: "gameObjects",
-  //         tag: "front",
-  //         targetDistanceMessuring: "gameObject_player",
-  //         pos: { x: 30, y: 60 },
-  //         size: { width: 80, height: 80 }
-  //       })
-  //   );
+  //   .forEach((e, i) => {
+  //     if (i % 55 === 0) {
+  //       yy++;
+  //       xx = 0;
+  //       console.log(yy);
+  //     }
+  //     xx++;
+  //     new Tester({
+  //       layer: "gameObjects",
+  //       tag: "front",
+  //       targetDistanceMessuring: "gameObject_player",
+  //       pos: { x: xx * 11, y: yy * 11 },
+  //       size: { width: 10, height: 10 }
+  //     });
+  //   });
   new Chest({
     layer: "gameObjects",
-    tag: "front",
+    tags: ["front"],
     targetDistanceMessuring: "gameObject_player",
-    pos: { x: 130, y: 63 },
+    pos: { x: 300, y: 500 },
     size: { width: 80, height: 80 }
   });
   // new Chest({
   //   layer: "gameObjects",
   //   tag: "front",
   //   targetDistanceMessuring: "gameObject_player",
-  //   pos: { x: -40, y: 63 },
+  //   pos: { x: 100, y: 100 },
+  //   size: { width: 15, height: 15 }
+  // });
+  // new Chest({
+  //   layer: "gameObjects",
+  //   tag: "front",
+  //   targetDistanceMessuring: "gameObject_player",
+  //   pos: { x: 50, y: 50 },
+  //   size: { width: 5, height: 5 }
+  // });
+  // new Chest({
+  //   layer: "gameObjects",
+  //   tag: "front",
+  //   targetDistanceMessuring: "gameObject_player",
+  //   pos: { x: 640, y: 240 },
+  //   size: { width: 5, height: 5 }
+  // });
+  // new UIFrame({
+  //   layer: "uiObjects",
+  //   tag: "ui",
+  //   pos: { x: 40, y: 40 },
   //   size: { width: 80, height: 80 }
   // });
-  new UIElement({
-    layer: "uiObjects",
-    tag: "ui",
-    pos: { x: 40, y: 40 },
-    size: { width: 80, height: 80 }
-  });
 
   // new UITest({
   //   layer: "uiObjects",
@@ -58,13 +78,13 @@ function setup() {
       type: "follow",
       isBounded: false,
       boundaries: {},
-      tag: "camera",
+      tags: ["camera"],
       followTag: "gameObject_player"
     })
   );
   new Player({
     layer: "gameObjects",
-    tag: "gameObject_player",
+    tags: ["gameObject_player"],
     pos: { x: 120, y: 160 },
     size: { width: 80, height: 80 }
   });

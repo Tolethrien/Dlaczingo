@@ -5,8 +5,8 @@ export default class Chest extends Fragment {
   // renderer!: RendererType;
   keyEvents!: keyEventsType;
   player?: FragmentType | undefined;
-  constructor({ pos, size, layer, tag, targetDistanceMessuring }: FragmentProps) {
-    super({ pos, size, layer, tag, targetDistanceMessuring });
+  constructor({ pos, size, layer, tags, targetDistanceMessuring }: FragmentProps) {
+    super({ pos, size, layer, tags, targetDistanceMessuring });
     this.attachPlugin("renderer", { bindThis: false });
     this.attachPlugin("keyEvents");
     this.attachPlugin("hitboxes", { bindThis: false });
@@ -20,20 +20,16 @@ export default class Chest extends Fragment {
       }
     });
     this.getPlugin<RendererType>("renderer")?.display("shape", {
-      color: [200, 100, 100],
-      alpha: 0.6,
-      round: 15,
-      stroke: {
-        size: 1,
-        color: [0, 0, 0]
-      }
+      fill: { color: [200, 100, 100], alpha: 1 },
+      stroke: { color: [200, 200, 200], size: 2 },
+      round: 0
     });
     this.getPlugin<HitboxesType>("hitboxes")?.setVisibleAll(true);
     // this.renderer.debug = true;
   }
   setup() {
     super.setup();
-    this.player = gameObjects.find((e) => e.tag === "gameObject_player");
+    this.player = gameObjects.find((e) => e.tags.includes("gameObject_player"));
     // console.log("🚀 ~ file: chest.ts:43 ~ Chest ~ setup ~ player:", this.player);
   }
   update() {

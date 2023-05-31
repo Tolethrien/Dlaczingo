@@ -1,22 +1,23 @@
-import { Vec2DType } from "../../main/vec2D";
-
-export default abstract class Plugin {
+export default abstract class UIPlugin {
   position: Vec2DType;
   size: Vec2DType;
-  protected siblings: Plugin[];
+  protected siblings: UIPlugin[];
   layer: string;
   referanceName: string;
+  relatedTo: Vec2DType;
+
   constructor(
     position: Vec2DType,
     size: Vec2DType,
     siblings: [],
-    layer: string,
-    referanceName: string
+    referanceName: string,
+    relatedTo: Vec2DType
   ) {
     this.position = position;
+    this.relatedTo = relatedTo;
     this.size = size;
     this.siblings = siblings;
-    this.layer = layer;
+    this.layer = "uiObjects";
     this.referanceName = referanceName;
   }
 

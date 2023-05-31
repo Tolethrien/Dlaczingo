@@ -5,7 +5,7 @@ import Renderer from "./plugins/renderer";
 import Hitboxes from "./plugins/hitboxes";
 import Animator from "./plugins/animator";
 import DirectionalMovement from "./plugins/directionalMovement";
-const pluginList = {
+const fragmentPluginList = {
   Renderer,
   MouseEvents,
   KeyEvents,
@@ -14,4 +14,4 @@ const pluginList = {
   Animator,
   DirectionalMovement
 };
-export default pluginList;
+export default fragmentPluginList;

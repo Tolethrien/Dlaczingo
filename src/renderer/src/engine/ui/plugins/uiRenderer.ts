@@ -1,6 +1,6 @@
 import { ctx } from "../../main/engine";
 import { renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
-import Plugin from "./plugin";
+import UIPlugin from "./uiPlugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
 type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
 interface SpriteConfiguration {
@@ -18,13 +18,13 @@ interface ShapeConfiguration {
   stroke?: { size: number; color: [number, number, number] };
 }
 
-export default class Renderer extends Plugin {
+export default class UiRenderer extends UIPlugin {
   protected debug: boolean;
   protected offset: { x: number; y: number; w: number; h: number };
   protected displayType?: DisplayT;
   renderConfig!: displayConfig;
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor({ position, size, siblings, referanceName, relatedTo }) {
+    super(position, size, siblings, referanceName, relatedTo);
     this.debug = false;
     this.offset = { x: 0, y: 0, w: 0, h: 0 };
   }
@@ -40,6 +40,7 @@ export default class Renderer extends Plugin {
           position: this.position,
           size: this.size,
           offset: this.offset,
+          relatedTo: this.relatedTo,
           ...this.renderConfig
         });
         break;
@@ -48,6 +49,7 @@ export default class Renderer extends Plugin {
           position: this.position,
           size: this.size,
           offset: this.offset,
+          relatedTo: this.relatedTo,
           ...this.renderConfig
         } as ShapeSprite);
         break;
@@ -56,6 +58,7 @@ export default class Renderer extends Plugin {
           position: this.position,
           size: this.size,
           offset: this.offset,
+          relatedTo: this.relatedTo,
           ...this.renderConfig
         } as ShapeSpritesheet);
         break;

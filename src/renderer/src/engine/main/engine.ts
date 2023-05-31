@@ -12,11 +12,12 @@ const loadingScreen = document.getElementById("loadingScreen")!;
 export const canvas = document.getElementById("gameWindow") as HTMLCanvasElement;
 export const ctx = canvas.getContext("2d")!;
 const messureTime = document.getElementById("fps-output");
+messureTime!.innerText = String(0);
 export const gameObjects: FragmentType[] = [];
 export const mapObjects: FragmentType[] = [];
 export const uiObjects: FragmentType[] = [];
 export const cameraObjects: Map<string, CameraType> = new Map();
-
+let mod = 0;
 export default class Engine {
   private preload: EngineConfig["preload"];
   private update: EngineConfig["update"];
@@ -74,5 +75,7 @@ export default class Engine {
   }
 }
 const tick = (x: number) => {
-  messureTime!.innerText = `${(performance.now() - x).toFixed(2)}MS`;
+  mod % 15 === 0 && mod !== 0
+    ? ((messureTime!.innerText = `${(performance.now() - x).toFixed(2)}MS`), (mod = 0))
+    : mod++;
 };

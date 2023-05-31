@@ -1,6 +1,7 @@
 import Fragment from "../fragment/fragment";
-import { gameObjects } from "../main/engine";
+import { canvas, canvasContainer, gameObjects, uiObjects } from "../main/engine";
 import { loadFile } from "../main/utils";
+import Inventory from "./inventory";
 import mp3 from "/12.mp3";
 import frame from "/char.png";
 export default class Player extends Fragment {
@@ -13,8 +14,8 @@ export default class Player extends Fragment {
   audio: AudioFileType;
   speed: number;
   static image: ImageFileType;
-  constructor({ pos, size, layer, tag, targetDistanceMessuring }: FragmentProps) {
-    super({ pos, size, layer, tag, targetDistanceMessuring });
+  constructor({ pos, size, layer, tags, targetDistanceMessuring }: FragmentProps) {
+    super({ pos, size, layer, tags, targetDistanceMessuring });
     this.attachPlugin("renderer");
     this.attachPlugin("mouseEvents");
     this.attachPlugin("keyEvents");
@@ -31,10 +32,10 @@ export default class Player extends Fragment {
       }
     });
     this.animator.setAnimationData({
-      top: { numberOfFrames: 6, rowInSpritesheet: 4, startAnimation: true },
+      top: { numberOfFrames: 6, rowInSpritesheet: 4 },
       down: { numberOfFrames: 6, rowInSpritesheet: 1 },
       left: { numberOfFrames: 6, rowInSpritesheet: 2 },
-      right: { numberOfFrames: 6, rowInSpritesheet: 3 }
+      right: { numberOfFrames: 6, rowInSpritesheet: 3, startAnimation: true }
     });
     // this.renderer.debug = true;
     this.hitboxes.setVisibleAll(true);
@@ -60,14 +61,38 @@ export default class Player extends Fragment {
     // this.renderer.display("sprite", { sprite: this.image });
     // this.hitboxes.removeHitbox("se");
     this.mouseEvents.addEvent("left", () => this.animator.changeState("top"));
-    this.mouseEvents.addEvent("middle", () => this.renderer.change({ color: [0, 0, 0] }));
+    this.mouseEvents.addEvent("middle", () => console.log("midd"));
     this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
+    new Inventory();
   }
   update() {
     this.handleMove();
+    // if (this.up) {
+    //   if (this.position.get().x < 400) this.directionalMovement.seset(400, 100);
+    //   if (
+    //     this.position.get().x > 399 &&
+    //     this.position.get().x < 405 &&
+    //     this.position.get().y > 99
+    //   ) {
+    //     this.directionalMovement.seset(400, 300);
+    //   }
+    //   if (this.position.get().y > 299) {
+    //     this.directionalMovement.seset(600, 200);
+    //   }
+    //   if (this.position.get().x > 598) {
+    //     this.directionalMovement.seset(400, 100);
+    //   }
+    // }
     this.keyEvents.onKeyPressed("space", () => {
       // this.animator.stopOnFinished();
+      // this.up = true;
+      gameObjects[0].getPlugin("renderer").style.round = 0;
+      console.log(gameObjects[0].getPlugin("renderer").style.round);
+      // uiObjects[0].visible = !uiObjects[0].visible;
+      // this.directionalMovement.moveToPoint(gameObjects[0].position);
     });
+    // this.directionalMovement.moveTo();
+    // this.directionalMovement.angleToDirection(10);
     super.update();
   }
 

@@ -1,12 +1,10 @@
-import { mouseProxymityList, getMousePosition, mousePressed } from "../../main/inputHandlers";
-import Plugin from "./plugin";
+import { getMousePosition, mousePressed, mouseProxymityList } from "../../main/inputHandlers";
+import UIPlugin from "./uiPlugin";
 
-export default class MouseEvents extends Plugin {
+export default class UiMouseEvents extends UIPlugin {
   protected events: Map<string, undefined | (() => void)>;
-  private mousePositionType: "fixed" | "translated";
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
-    this.mousePositionType = layer === "gameObjects" ? "translated" : "fixed";
+  constructor({ position, size, relatedTo, siblings, referanceName }) {
+    super(position, size, siblings, referanceName, relatedTo);
     this.events = new Map([
       ["left", undefined],
       ["right", undefined],
@@ -43,10 +41,12 @@ export default class MouseEvents extends Plugin {
 
   mouseCollide() {
     return (
-      getMousePosition(this.mousePositionType).x >= this.position.get().x &&
-      getMousePosition(this.mousePositionType).x <= this.position.get().x + this.size.get().x &&
-      getMousePosition(this.mousePositionType).y >= this.position.get().y &&
-      getMousePosition(this.mousePositionType).y <= this.position.get().y + this.size.get().y &&
+      getMousePosition("fixed").x >= this.relatedTo.get().x + this.position.get().x &&
+      getMousePosition("fixed").x <=
+        this.relatedTo.get().x + this.position.get().x + this.size.get().x &&
+      getMousePosition("fixed").y >= this.relatedTo.get().y + this.position.get().y &&
+      getMousePosition("fixed").y <=
+        this.relatedTo.get().y + this.position.get().y + this.size.get().y &&
       true
     );
   }

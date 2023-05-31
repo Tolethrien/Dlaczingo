@@ -1,10 +1,8 @@
 import { CameraType } from "../components/camera";
 
-export interface mousePropagationType extends MouseEventsType {}
-
 export let mousePressed = false;
 const mousePosition: [number, number, number, number] = [0, 0, 0, 0];
-export const mouseProxymityList = new Set<mousePropagationType>();
+export const mouseProxymityList = new Set<MouseEventsType>();
 
 export const getMousePosition = (state: "fixed" | "translated") => {
   return state === "translated"
@@ -12,7 +10,7 @@ export const getMousePosition = (state: "fixed" | "translated") => {
     : { x: mousePosition[2], y: mousePosition[3] };
 };
 const useProximityFilter = () => {
-  let target!: mousePropagationType;
+  let target!: MouseEventsType;
   ["uiObjects", "gameObjects"].every((layer) => {
     const eventList = [...mouseProxymityList].filter((mousePlugin) => mousePlugin.layer === layer);
     return eventList.length !== 0 ? ((target = eventList[eventList.length - 1]), false) : true;
@@ -26,7 +24,9 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
     const target = useProximityFilter();
     if (target) {
       target.mouseCollide() ? target.onClickEvent() : target.onDragOut();
-      setTimeout(() => mouseProxymityList.clear(), 0);
+      //TODO: add dubble click timeout to prevent clearing
+      // setTimeout(() => mouseProxymityList.clear(), 0);
+      mouseProxymityList.clear();
     }
   };
   // context button
@@ -34,7 +34,7 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
     const target = useProximityFilter();
     if (target) {
       target.mouseCollide() && target.onContextEvent();
-      setTimeout(() => mouseProxymityList.clear(), 0);
+      mouseProxymityList.clear();
     }
   };
   // all additional buttons on mouse by event.button:number
@@ -43,7 +43,7 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
       const target = useProximityFilter();
       if (target) {
         target.mouseCollide() && target.onClickMiddleEvent();
-        setTimeout(() => mouseProxymityList.clear(), 0);
+        mouseProxymityList.clear();
       }
     }
   };

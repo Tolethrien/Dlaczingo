@@ -37,7 +37,7 @@ export default class Vec2D {
     else this.vector = [this.vector[0] * scalarX, this.vector[1] * scalarY];
   }
   public length() {
-    return Math.sqrt(this.vector.reduce((acc, cur) => acc + cur * cur, 0));
+    return Math.sqrt(this.vector.reduce((acc, cur) => acc + cur ** 2, 0));
   }
   public distanceToOtherVec2D(other: Vec2DType) {
     return Math.sqrt(
