@@ -19,7 +19,8 @@ export default class Fragment {
     distance: number | undefined;
     fragment: FragmentType | undefined;
   };
-  constructor({ pos, size, layer, targetDistanceMessuring, tags }: FragmentProps) {
+  protected relatedTo?: Vec2DType;
+  constructor({ pos, size, layer, targetDistanceMessuring, tags, relatedTo }: FragmentProps) {
     this.position = new Vec2D(pos.x, pos.y);
     this.size = new Vec2D(size.width, size.height);
     this.attachedPlugins = [];
@@ -28,18 +29,16 @@ export default class Fragment {
     this.layer = layer;
     this.tags = tags;
     this.id = createRandomId();
+    relatedTo && (this.relatedTo = relatedTo);
     targetDistanceMessuring &&
       (this.distanceToTarget = {
         tag: targetDistanceMessuring,
         fragment: undefined,
         distance: undefined
       });
-    this.layerList();
+    this.layer === "gameObjects" ? gameObjects.push(this) : mapObjects.push(this);
   }
-  private layerList() {
-    if (this.layer === "gameObjects") gameObjects.push(this);
-    else if (this.layer === "mapObjects") mapObjects.push(this);
-  }
+
   render() {
     this.visible && this.attachedPlugins.forEach((e) => e.render());
   }
@@ -66,7 +65,8 @@ export default class Fragment {
         layer: this.layer,
         id: this.id,
         siblings: this.attachedPlugins,
-        referanceName: options?.overrideName ? options.overrideName : plugin
+        referanceName: options?.overrideName ? options.overrideName : plugin,
+        relatedTo: this.relatedTo
       })
     );
     if (options?.bindThis !== false) {

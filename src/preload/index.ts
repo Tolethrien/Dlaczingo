@@ -3,8 +3,10 @@ import { electronAPI } from "@electron-toolkit/preload";
 // import { API } from "./index.d"
 // Custom APIs for renderer
 // const api: API = {}
-const api = {};
-
+const api = {
+  //IPCRecive TEST
+  // res: () => ipcRenderer.send("resize-me-please", { x: 100, y: 100 })
+};
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.

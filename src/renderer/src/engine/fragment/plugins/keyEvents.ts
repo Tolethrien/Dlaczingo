@@ -1,10 +1,9 @@
-// import { keyPressed, keyOnce, keyLeave, fixedTime } from "../../Main/Engine.js";
 import { keyTypes, keyPressed } from "../../main/inputHandlers";
 import Plugin from "./plugin";
 export default class KeyEvents extends Plugin {
   objectKeyUse: [];
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
     this.objectKeyUse = [];
   }
   onKeyPressed(key: keyTypes, callback: () => void) {
@@ -25,20 +24,16 @@ export default class KeyEvents extends Plugin {
     }
   }
   isKeyHolded(key: keyTypes) {
-    if (keyPressed.has(key)) return true;
-    return false;
+    return keyPressed.has(key) ? true : false;
   }
   isNotHolded(errorKeys?: keyTypes[]) {
     if (errorKeys && errorKeys.length !== 0) {
-      if (errorKeys.every((e) => (keyPressed.has(e) ? false : true))) {
-        return true;
-      } else return false;
+      return errorKeys.every((e) => (keyPressed.has(e) ? false : true)) ? true : false;
     } else {
       return true;
     }
   }
   keyAny() {
-    if (keyPressed.size !== 0) return true;
-    return false;
+    return keyPressed.size !== 0 ? true : false;
   }
 }

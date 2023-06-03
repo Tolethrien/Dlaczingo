@@ -1,6 +1,8 @@
 import Fragment from "../fragment/fragment";
 import { canvas, canvasContainer, gameObjects, uiObjects } from "../main/engine";
+import { getMousePosition } from "../main/inputHandlers";
 import { loadFile } from "../main/utils";
+import Vec2D from "../main/vec2D";
 import Inventory from "./inventory";
 import mp3 from "/12.mp3";
 import frame from "/char.png";
@@ -14,8 +16,8 @@ export default class Player extends Fragment {
   audio: AudioFileType;
   speed: number;
   static image: ImageFileType;
-  constructor({ pos, size, layer, tags, targetDistanceMessuring }: FragmentProps) {
-    super({ pos, size, layer, tags, targetDistanceMessuring });
+  constructor(props: FragmentProps) {
+    super(props);
     this.attachPlugin("renderer");
     this.attachPlugin("mouseEvents");
     this.attachPlugin("keyEvents");
@@ -37,8 +39,8 @@ export default class Player extends Fragment {
       left: { numberOfFrames: 6, rowInSpritesheet: 2 },
       right: { numberOfFrames: 6, rowInSpritesheet: 3, startAnimation: true }
     });
-    // this.renderer.debug = true;
-    this.hitboxes.setVisibleAll(true);
+    this.renderer.debug = true;
+    // this.hitboxes.setVisibleAll(true);
     this.audio = loadFile<AudioFileType>("audio", mp3);
     Player.image = loadFile<ImageFileType>("img", frame);
     // this.renderer.display("shape", {
@@ -53,7 +55,8 @@ export default class Player extends Fragment {
     this.renderer.display("spritesheet", {
       spritesheet: Player.image,
       crop: { x: 0, y: 0 },
-      cropSize: { width: 32, height: 32 }
+      cropSize: { width: 32, height: 32 },
+      debugText: this.id
     });
     this.speed = 5;
     this.directionalMovement.setMovemmentSpeed(this.speed);
@@ -84,12 +87,8 @@ export default class Player extends Fragment {
     //   }
     // }
     this.keyEvents.onKeyPressed("space", () => {
-      // this.animator.stopOnFinished();
-      // this.up = true;
-      gameObjects[0].getPlugin("renderer").style.round = 0;
-      console.log(gameObjects[0].getPlugin("renderer").style.round);
-      // uiObjects[0].visible = !uiObjects[0].visible;
-      // this.directionalMovement.moveToPoint(gameObjects[0].position);
+      // this.directionalMovement.moveToPoint(new Vec2D(0, 0));
+      // window.api.res();
     });
     // this.directionalMovement.moveTo();
     // this.directionalMovement.angleToDirection(10);
@@ -265,6 +264,6 @@ export default class Player extends Fragment {
           this.directionalMovement.ContinuousMove("SE");
         }
       }
-    } else this.directionalMovement.stopMovement();
+    } else !this.directionalMovement.isOnTravel() && this.directionalMovement.stopMovement();
   }
 }

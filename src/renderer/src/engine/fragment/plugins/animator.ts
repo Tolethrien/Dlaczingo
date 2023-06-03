@@ -1,19 +1,19 @@
 import Plugin from "./plugin";
 import { SpritesheetConfiguration } from "./renderer";
 
-interface AnimationDataI {
+interface AnimationData {
   [key: string]: { numberOfFrames: number; rowInSpritesheet: number; startAnimation?: boolean };
 }
 export default class Animator extends Plugin {
   private rendererConfig!: SpritesheetConfiguration;
-  protected animationData!: AnimationDataI;
+  protected animationData!: AnimationData;
   private frameCounter: number;
   animationSpeed: number;
   private isAnimate: boolean;
   private state: string;
   private stopOnAnimationFinished: boolean;
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
     this.animationData;
     this.frameCounter = 0;
     this.animationSpeed = 8;
@@ -34,19 +34,19 @@ export default class Animator extends Plugin {
    * ovverride's renderer in case of multiple instance's of it in Fragment.
    * @Docs https://engine-docs-git-develop-tolethrien.vercel.app/docs/fragment/fragment#dodawaniePluginow
    */
-  overrideRenderer(newRend: RendererType) {
-    if (!newRend.renderConfig) throw new Error("animator cant find renderer");
-    if (!("spritesheet" in newRend.renderConfig))
-      throw new Error("renderer dosnt have a valid spritesheet");
-    this.rendererConfig = newRend.renderConfig as SpritesheetConfiguration;
+  overrideRenderer(newRenderer: RendererType) {
+    if (!newRenderer.renderConfig) throw new Error("animator cant find renderer");
+    if (!("spritesheet" in newRenderer.renderConfig))
+      throw new Error("renderer doesn't have a valid spritesheet");
+    this.rendererConfig = newRenderer.renderConfig as SpritesheetConfiguration;
   }
   /**
    * give animator object with all animation data like state names, number of frames in state etc.
    */
-  setAnimationData(data: AnimationDataI) {
+  setAnimationData(data: AnimationData) {
     this.animationData = data;
-    const startAnim = Object.entries(data).find((e) => e[1].startAnimation) ?? "e";
-    this.state = startAnim[0] ?? Object.keys(data)[0];
+    this.state = Object.entries(data).find((e) => e[1].startAnimation)?.[0] ?? Object.keys(data)[0];
+    console.log(this.state);
   }
   /**animator updater! function controled by Fragment and game loop.
    *  DO NOT invoke */

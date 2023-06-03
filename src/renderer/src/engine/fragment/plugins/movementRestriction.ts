@@ -11,8 +11,8 @@ export default class MovementRestriction extends Plugin {
   private yAxis: boolean;
   private camera?: CameraType;
 
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, layer, siblings, referanceName);
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
     this.xAxis = false;
     this.yAxis = false;
   }

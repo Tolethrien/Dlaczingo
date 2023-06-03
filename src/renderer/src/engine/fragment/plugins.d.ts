@@ -6,7 +6,16 @@ import MovementRestriction from "./plugins/movementRestriction";
 import fragmentPluginList from "./fragmentPluginList";
 import Animator from "./plugins/animator";
 import DirectionalMovement from "./plugins/directionalMovement";
+import Plugin from "./plugins/plugin";
 export declare global {
+  interface PluginProps {
+    position: Vec2DType;
+    size: Vec2DType;
+    siblings: Plugin[];
+    layer: FragmentLayer;
+    referanceName: string;
+    relatedTo: Vec2DType;
+  }
   type fragmentPluginListT = Uncapitalize<keyof typeof fragmentPluginList>;
   interface RendererType extends Renderer {}
   interface HitboxesType extends Hitboxes {}

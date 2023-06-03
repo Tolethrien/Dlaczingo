@@ -6,8 +6,8 @@ export default class Tester extends Fragment {
   mouseEvents!: MouseEventsType;
   keyEvents!: keyEventsType;
   hitboxes!: HitboxesType;
-  constructor({ pos, size, layer, tag, targetDistanceMessuring }: FragmentProps) {
-    super({ pos, size, layer, tag, targetDistanceMessuring });
+  constructor(props: FragmentProps) {
+    super(props);
     this.attachPlugin("renderer");
     this.attachPlugin("mouseEvents");
     this.attachPlugin("keyEvents");

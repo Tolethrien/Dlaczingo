@@ -1,20 +1,24 @@
 import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+let mainWindow: BrowserWindow;
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
+    // fullscreen: true,
+    // resizable: false,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       sandbox: false
       // devTools: false
     }
   });
-
+  // mainWindow.fullScreen
+  // mainWindow.setMenu(null);
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
   });
@@ -46,9 +50,13 @@ app.whenReady().then(() => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
-
   createWindow();
-
+  // IPC TEST
+  // ipcMain.on("resize-me-please", (_, arg) => {
+  //   mainWindow.maximize();
+  //   console.log(arg);
+  //   mainWindow.setSize(arg.x, arg.y);
+  // });
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

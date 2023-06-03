@@ -10,7 +10,7 @@ interface SetGridProps {
 export default class UIFrame {
   constructor() {}
 
-  createGrid<T>(cl: new (...args) => T, options: SetGridProps): T[] {
+  createGrid<T>(cl: new (...args: any) => T, options: SetGridProps): T[] {
     const grid: T[] = [];
     let col = 0;
     let row = 0;
@@ -20,16 +20,17 @@ export default class UIFrame {
         row !== 0 && i % options.numberOfRows === 0 && ((row = 0), col++);
         grid.push(
           new cl({
-            position: {
+            pos: {
               x:
                 options.startPoint.x +
                 options.sizeOfElement.width * row +
                 (row !== 0 ? options.gap.x * row : 0),
-              y: options.startPoint.y + options.sizeOfElement.height * col + options.gap.y * col,
-              relatedTo: options.startPoint.relatedTo ?? new Vec2D(0, 0)
+              y: options.startPoint.y + options.sizeOfElement.height * col + options.gap.y * col
             },
+            relatedTo: options.startPoint.relatedTo ?? new Vec2D(0, 0),
             size: { height: options.sizeOfElement.height, width: options.sizeOfElement.width },
-            tags: ["srsrsr"]
+            tags: ["srsrsr"],
+            layer: "uiObjects"
           })
         );
         row++;

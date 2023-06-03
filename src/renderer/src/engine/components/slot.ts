@@ -1,22 +1,23 @@
+import Fragment from "../fragment/fragment";
 import { loadFile } from "../main/utils";
-import UIElement from "../ui/uiElement";
 import frame from "/frame.png";
 export interface SlotType extends Slot {}
-export default class Slot extends UIElement {
-  uiMouseEvents!: uiMouseEventsType;
-  uiRenderer!: uiRendererType;
+export default class Slot extends Fragment {
+  mouseEvents!: MouseEventsType;
+  renderer!: RendererType;
   item: string;
   amount: number;
-  constructor({ position, size, tags }: UIElementProps) {
-    super({ position, size, tags });
-    this.attachPlugin("uiRenderer");
-    this.attachPlugin("uiMouseEvents");
+  constructor(props: FragmentProps) {
+    super(props);
+    this.attachPlugin("renderer");
+    this.attachPlugin("mouseEvents");
     // console.log(this);
     this.amount = 0;
     this.item = "a";
-    this.uiMouseEvents.addEvent("left", () => {
+    this.mouseEvents.addEvent("left", () => {
       this.amount += 1;
       this.item = "bu";
+      console.log(this);
     });
     this.image = loadFile<ImageFileType>("img", frame);
     // this.uiRenderer.display("shape", {
@@ -28,6 +29,6 @@ export default class Slot extends UIElement {
     //     color: [0, 0, 0]
     //   }
     // });
-    this.uiRenderer.display("sprite", { sprite: this.image });
+    this.renderer.display("sprite", { sprite: this.image });
   }
 }

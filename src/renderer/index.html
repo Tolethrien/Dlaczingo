@@ -13,14 +13,15 @@
   <body>
     <script type="module" src="./startPoint.ts"></script>
     <script src="src/Engine/Main/fps.js"></script>
-
-    <h2>Template</h2>
-    <div id="fps-output"></div>
     <div id="loadingScreen">
       <p>Loading...</p>
     </div>
     <div id="CanvasContainer" width="800" height="600">
-      <canvas id="gameWindow" style="display: none" width="600" height="400"></canvas>
+      <div class="topBar">
+        <div id="fps-output"></div>
+        <h2>Temp V-1.24b</h2>
+      </div>
+      <canvas id="gameWindow" style="display: none" width="800" height="600"></canvas>
     </div>
   </body>
 </html>

@@ -5,6 +5,7 @@ import Player from "./src/engine/components/player";
 import Camera from "./src/engine/components/camera";
 import UIElement from "./src/engine/ui/uiElement";
 import UIFrame from "./src/engine/components/uiBackground";
+import Vec2D from "./src/engine/main/vec2D";
 function preload() {}
 function setup() {
   // new Chest({
@@ -36,6 +37,7 @@ function setup() {
     targetDistanceMessuring: "gameObject_player",
     pos: { x: 300, y: 500 },
     size: { width: 80, height: 80 }
+    // relatedTo: new Vec2D(0, 0)
   });
   // new Chest({
   //   layer: "gameObjects",

@@ -1,5 +1,5 @@
 import Plugin from "./plugin";
-import { renderHitboxFrame } from "../../main/shapes";
+import { ctx } from "../../main/engine";
 
 /**array takes settings of individual hitbox:
  * [0]: active, [1]: visible [2]: array of position and size [3]: array of offset
@@ -17,8 +17,8 @@ interface addHitboxProps {
 }
 export default class Hitboxes extends Plugin {
   private hitboxes: Map<string, hitboxValues>;
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor(props: PluginProps) {
+    super(props);
     this.hitboxes = new Map();
   }
   update() {
@@ -26,7 +26,7 @@ export default class Hitboxes extends Plugin {
   }
 
   render() {
-    this.hitboxes.forEach((hitbox) => hitbox[1] && renderHitboxFrame(hitbox[2]));
+    this.hitboxes.forEach((hitbox) => hitbox[1] && this.hitboxFrame(hitbox[2]));
   }
 
   addHitbox(name: string, { active, offset, visible }: addHitboxProps) {
@@ -88,9 +88,7 @@ export default class Hitboxes extends Plugin {
       true
     );
   }
-  /**array takes settings of individual hitbox:
-   * [0]: active, [1]: visible [2]: array of position and size [3]: array of offset
-   */
+
   willBeColliding(
     hitbox: hitboxValues,
     target: hitboxValues,
@@ -99,13 +97,16 @@ export default class Hitboxes extends Plugin {
     if (!hitbox[0] || hitbox === target) return;
 
     return (
-      //player.y + player.h + 5 <= target.y
       hitbox[2][1] + hitbox[2][3] + modifier[2] > target[2][1] &&
-      //player.Y - 5 <= target.y + target.h
       hitbox[2][1] - modifier[0] < target[2][1] + target[2][3] &&
       hitbox[2][0] + hitbox[2][2] + modifier[1] > target[2][0] &&
       hitbox[2][0] - modifier[3] < target[2][0] + target[2][2] &&
       true
     );
+  }
+  private hitboxFrame(vector: [number, number, number, number]) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgb(255, 255, 0)";
+    ctx.strokeRect(vector[0], vector[1], vector[2], vector[3]);
   }
 }

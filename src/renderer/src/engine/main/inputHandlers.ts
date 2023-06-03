@@ -15,8 +15,7 @@ const useProximityFilter = () => {
     const eventList = [...mouseProxymityList].filter((mousePlugin) => mousePlugin.layer === layer);
     return eventList.length !== 0 ? ((target = eventList[eventList.length - 1]), false) : true;
   });
-  if (!target) return;
-  return target;
+  return !target ? false : target;
 };
 export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
   // primary button
@@ -52,21 +51,17 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
 
   if (!camera) {
     canvas.addEventListener("mousemove", (event) => {
-      mousePosition[0] = Math.round(event.clientX - canvas.parentElement!.offsetLeft);
-      mousePosition[1] = Math.round(event.clientY - canvas.parentElement!.offsetTop);
-      mousePosition[2] = Math.round(event.clientX - canvas.parentElement!.offsetLeft);
-      mousePosition[3] = Math.round(event.clientY - canvas.parentElement!.offsetTop);
+      mousePosition[0] = Math.round(event.offsetX);
+      mousePosition[1] = Math.round(event.offsetY);
+      mousePosition[2] = Math.round(event.offsetX);
+      mousePosition[3] = Math.round(event.offsetY);
     });
   } else {
     canvas.addEventListener("mousemove", (event) => {
-      mousePosition[0] =
-        Math.round(event.clientX - canvas.parentElement!.offsetLeft + camera.position.get().x) /
-        camera.zoom;
-      mousePosition[1] =
-        Math.round(event.clientY - canvas.parentElement!.offsetTop + camera.position.get().y) /
-        camera.zoom;
-      mousePosition[2] = Math.round(event.clientX - canvas.parentElement!.offsetLeft);
-      mousePosition[3] = Math.round(event.clientY - canvas.parentElement!.offsetTop);
+      mousePosition[0] = Math.round(event.offsetX + camera.position.get().x) / camera.zoom;
+      mousePosition[1] = Math.round(event.offsetY + camera.position.get().y) / camera.zoom;
+      mousePosition[2] = Math.round(event.offsetX);
+      mousePosition[3] = Math.round(event.offsetY);
     });
   }
 }

@@ -4,9 +4,9 @@ import Plugin from "./plugin";
 export default class MouseEvents extends Plugin {
   protected events: Map<string, undefined | (() => void)>;
   private mousePositionType: "fixed" | "translated";
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
-    this.mousePositionType = layer === "gameObjects" ? "translated" : "fixed";
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
+    this.mousePositionType = this.layer !== "uiObjects" ? "translated" : "fixed";
     this.events = new Map([
       ["left", undefined],
       ["right", undefined],
@@ -43,10 +43,14 @@ export default class MouseEvents extends Plugin {
 
   mouseCollide() {
     return (
-      getMousePosition(this.mousePositionType).x >= this.position.get().x &&
-      getMousePosition(this.mousePositionType).x <= this.position.get().x + this.size.get().x &&
-      getMousePosition(this.mousePositionType).y >= this.position.get().y &&
-      getMousePosition(this.mousePositionType).y <= this.position.get().y + this.size.get().y &&
+      getMousePosition(this.mousePositionType).x >=
+        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x &&
+      getMousePosition(this.mousePositionType).x <=
+        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x + this.size.get().x &&
+      getMousePosition(this.mousePositionType).y >=
+        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y &&
+      getMousePosition(this.mousePositionType).y <=
+        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y + this.size.get().y &&
       true
     );
   }

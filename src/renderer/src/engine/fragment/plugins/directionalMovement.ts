@@ -7,8 +7,8 @@ export default class DirectionalMovement extends Plugin {
   private speed: number;
   private vel: Vec2DType;
   private goToPoint: Vec2DType | undefined;
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
     this.vel = new Vec2D(0, 0);
     this.speed = 1;
     this.goToPoint = undefined;
@@ -17,7 +17,9 @@ export default class DirectionalMovement extends Plugin {
   setMovemmentSpeed(speed: number) {
     this.speed = speed;
   }
-
+  isOnTravel() {
+    return this.goToPoint ? true : false;
+  }
   teleportTo(x: number, y: number) {
     this.position.set(x, y);
   }
@@ -57,14 +59,10 @@ export default class DirectionalMovement extends Plugin {
     this.movingTowardsPoint();
   }
   isMoving() {
-    if (this.vel.get().x !== 0 || this.vel.get().y !== 0) return true;
-    return false;
+    return this.vel.get().x !== 0 || this.vel.get().y !== 0 ? true : false;
   }
   stopMovement() {
     this.isMoving() && this.vel.set(0, 0);
-  }
-  moveFromAngle(angle: number) {
-    this.angleToDirection(angle);
   }
 
   private targetVectorToAngle(target: Vec2DType | [number, number]) {
@@ -84,15 +82,15 @@ export default class DirectionalMovement extends Plugin {
       return angleRadians < 0 ? angleRadians + 360 : angleRadians;
     }
   }
-  private angleToDirection(angle: number) {
+  private moveFromAngle(angle: number) {
     if (angle >= 0 && angle <= 45) this.ContinuousMove("N");
-    if (angle > 45 && angle <= 90) this.ContinuousMove("NE");
-    if (angle > 90 && angle <= 135) this.ContinuousMove("E");
-    if (angle > 135 && angle <= 180) this.ContinuousMove("SE");
-    if (angle > 180 && angle <= 225) this.ContinuousMove("S");
-    if (angle > 225 && angle <= 270) this.ContinuousMove("SW");
-    if (angle > 270 && angle <= 315) this.ContinuousMove("W");
-    if (angle > 315 && angle < 359) this.ContinuousMove("NW");
+    else if (angle > 45 && angle <= 90) this.ContinuousMove("NE");
+    else if (angle > 90 && angle <= 135) this.ContinuousMove("E");
+    else if (angle > 135 && angle <= 180) this.ContinuousMove("SE");
+    else if (angle > 180 && angle <= 225) this.ContinuousMove("S");
+    else if (angle > 225 && angle <= 270) this.ContinuousMove("SW");
+    else if (angle > 270 && angle <= 315) this.ContinuousMove("W");
+    else if (angle > 315 && angle < 359) this.ContinuousMove("NW");
   }
 
   isOnPoint(vector: Vec2DType) {
@@ -113,7 +111,7 @@ export default class DirectionalMovement extends Plugin {
         this.stopMovement();
         this.goToPoint = undefined;
       } else {
-        this.angleToDirection(this.targetVectorToAngle(this.goToPoint));
+        this.moveFromAngle(this.targetVectorToAngle(this.goToPoint));
       }
     }
   }

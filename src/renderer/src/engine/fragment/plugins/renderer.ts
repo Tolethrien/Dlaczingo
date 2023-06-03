@@ -1,21 +1,23 @@
 import { ctx } from "../../main/engine";
-import { renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
 import Plugin from "./plugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
 type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
 interface SpriteConfiguration {
   sprite: ImageFileType;
+  debugText: string | number;
 }
 
 export interface SpritesheetConfiguration {
   spritesheet: ImageFileType;
   crop: { x: number; y: number };
   cropSize: { width: number; height: number };
+  debugText: string | number;
 }
 interface ShapeConfiguration {
   fill?: { color: [number, number, number]; alpha?: number };
-  round?: number;
+  round: number;
   stroke?: { size: number; color: [number, number, number] };
+  debugText: string | number;
 }
 
 export default class Renderer extends Plugin {
@@ -23,8 +25,8 @@ export default class Renderer extends Plugin {
   protected offset: { x: number; y: number; w: number; h: number };
   protected displayType?: DisplayT;
   renderConfig!: displayConfig;
-  constructor({ position, size, layer, siblings, referanceName }) {
-    super(position, size, siblings, layer, referanceName);
+  constructor(pluginProps: PluginProps) {
+    super(pluginProps);
     this.debug = false;
     this.offset = { x: 0, y: 0, w: 0, h: 0 };
   }
@@ -36,32 +38,17 @@ export default class Renderer extends Plugin {
   render() {
     switch (this.displayType) {
       case "shape":
-        renderRect({
-          position: this.position,
-          size: this.size,
-          offset: this.offset,
-          ...this.renderConfig
-        });
+        this.renderRect();
         break;
       case "sprite":
-        renderSprite({
-          position: this.position,
-          size: this.size,
-          offset: this.offset,
-          ...this.renderConfig
-        } as ShapeSprite);
+        this.renderSprite();
         break;
       case "spritesheet":
-        renderSpriteSheet({
-          position: this.position,
-          size: this.size,
-          offset: this.offset,
-          ...this.renderConfig
-        } as ShapeSpritesheet);
+        this.renderSpriteSheet();
         break;
     }
 
-    this.debug && this.renderDebugWindow();
+    this.debug && this.renderDebugerFrame();
   }
 
   change(props: displayConfig) {
@@ -74,31 +61,131 @@ export default class Renderer extends Plugin {
   offsetVector(offset: { x: number; y: number; w: number; h: number }) {
     this.offset = offset;
   }
-
-  renderDebugWindow() {
+  private renderSprite() {
+    ctx.drawImage(
+      (this.renderConfig as SpriteConfiguration).sprite as HTMLImageElement,
+      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+        this.position.getRound().x +
+        (this.offset ? this.offset.x : 0),
+      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+        this.position.getRound().y +
+        (this.offset ? this.offset.y : 0),
+      this.size.get().x + (this.offset ? this.offset.w : 0),
+      this.size.get().y + (this.offset ? this.offset.h : 0)
+    );
+  }
+  private renderSpriteSheet() {
+    if ("spritesheet" in this.renderConfig) {
+      ctx.drawImage(
+        this.renderConfig.spritesheet as HTMLImageElement,
+        this.renderConfig.crop.x,
+        this.renderConfig.crop.y,
+        this.renderConfig.cropSize.width,
+        this.renderConfig.cropSize.height,
+        (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+          this.position.getRound().x +
+          (this.offset ? this.offset.x : 0),
+        (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+          this.position.getRound().y +
+          (this.offset ? this.offset.y : 0),
+        this.size.get().x + (this.offset ? this.offset.w : 0),
+        this.size.get().y + (this.offset ? this.offset.h : 0)
+      );
+    }
+  }
+  private renderRect() {
+    if ("round" in this.renderConfig) {
+      ctx.beginPath();
+      if (this.renderConfig.fill) {
+        ctx.fillStyle = `rgba(${this.renderConfig.fill.color}, ${
+          this.renderConfig.fill.alpha ?? 1
+        })`;
+        ctx.roundRect(
+          (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+            this.position.getRound().x +
+            (this.offset ? this.offset.x : 0) +
+            (this.renderConfig.stroke ? 1 : 0),
+          (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+            this.position.getRound().y +
+            (this.offset ? this.offset.y : 0) +
+            (this.renderConfig.stroke ? 1 : 0),
+          this.size.get().x +
+            (this.offset ? this.offset.w : 0) -
+            (this.renderConfig.stroke ? 2 : 0),
+          this.size.get().y +
+            (this.offset ? this.offset.h : 0) -
+            (this.renderConfig.stroke ? 2 : 0),
+          this.renderConfig.round ?? 0
+        );
+        ctx.fill();
+      }
+      // drawing stroke with this.offset to inside
+      if (this.renderConfig.stroke) {
+        ctx.lineWidth = this.renderConfig.stroke.size;
+        ctx.strokeStyle = `rgba(${this.renderConfig.stroke.color})`;
+        ctx.roundRect(
+          (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+            this.position.getRound().x +
+            (this.offset ? this.offset.x : 0) +
+            this.renderConfig.stroke.size / 2,
+          (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+            this.position.getRound().y +
+            (this.offset ? this.offset.y : 0) +
+            this.renderConfig.stroke.size / 2,
+          this.size.get().x + (this.offset ? this.offset.w : 0) - this.renderConfig.stroke.size,
+          this.size.get().y + (this.offset ? this.offset.h : 0) - this.renderConfig.stroke.size,
+          this.renderConfig.round ?? 0
+        );
+        ctx.stroke();
+      }
+      ctx.closePath();
+    }
+  }
+  private renderDebugerFrame() {
     ctx.beginPath();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgb(0, 255, 0)";
+    //stroke
+    ctx.strokeStyle = "rgb(100, 255, 0)";
+    //dot
     ctx.fillStyle = "rgb(0, 255, 0)";
     ctx.roundRect(
-      this.position.getRound().x + this.offset.x + 1,
-      this.position.getRound().y + this.offset.y + 1,
-      this.size.get().x + this.offset.w - 2,
-      this.size.get().y + this.offset.h - 2,
+      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+        this.position.getRound().x +
+        (this.offset ? this.offset.x : 0),
+      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+        this.position.getRound().y +
+        (this.offset ? this.offset.y : 0),
+      this.size.get().x + (this.offset ? this.offset.w : 0) - 2,
+      this.size.get().y + (this.offset ? this.offset.h : 0) - 2,
       0
     );
     ctx.fillRect(
-      this.position.getRound().x + this.offset.x + this.size.get().x / 2 - 1,
-      this.position.getRound().y + this.offset.y + this.size.get().y / 2 - 1,
+      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+        this.position.getRound().x +
+        (this.offset ? this.offset.x : 0) +
+        this.size.get().x / 2 -
+        1,
+      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+        this.position.getRound().y +
+        (this.offset ? this.offset.y : 0) +
+        this.size.get().y / 2 -
+        1,
       2,
       2
     );
     ctx.stroke();
     ctx.font = `${this.size.get().x / 2 - this.size.get().x / 4}px Arial`;
     ctx.fillText(
-      "ID",
-      this.position.getRound().x + this.offset.x + 4,
-      this.position.getRound().y + this.offset.y + this.size.get().x / 2 - this.size.get().x / 4,
+      this.renderConfig.debugText as string,
+      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+        this.position.getRound().x +
+        (this.offset ? this.offset.x : 0) +
+        4,
+      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+        this.position.getRound().y +
+        (this.offset ? this.offset.y : 0) +
+        this.size.get().x / 2 -
+        this.size.get().x / 5,
       this.size.get().x - this.size.get().x / 8
     );
     ctx.closePath();

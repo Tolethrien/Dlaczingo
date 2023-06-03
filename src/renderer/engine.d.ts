@@ -20,15 +20,12 @@ export declare global {
   interface FragmentProps {
     pos: { x: number; y: number };
     size: { width: number; height: number };
-    layer: "gameObjects" | "mapObjects" | "cameraObject" | "independent";
+    layer: FragmentLayer;
     tags: string[];
     targetDistanceMessuring?: string;
+    relatedTo?: Vec2DType;
   }
-  interface UIElementProps {
-    tags: string[];
-    position: { x: number; y: number; relatedTo: Vec2DType };
-    size: { width: number; height: number };
-  }
+  type FragmentLayer = "gameObjects" | "uiObjects" | "mapObjects" | "cameraObject" | "independent";
   interface AudioFileType {
     play: () => void;
     loop: boolean;
@@ -36,29 +33,4 @@ export declare global {
   }
   interface ImageFileType {}
   interface Vec2DType extends Vec2D {}
-  interface ShapeSprite {
-    sprite: ImageFileType;
-    position: Vec2DType;
-    size: Vec2DType;
-    relatedTo?: Vec2DType;
-    offset?: { x: number; y: number; w: number; h: number };
-  }
-  interface ShapeSpritesheet {
-    spritesheet: ImageFileType;
-    crop: { x: number; y: number };
-    cropSize: { width: number; height: number };
-    position: Vec2DType;
-    size: Vec2DType;
-    relatedTo?: Vec2DType;
-    offset?: { x: number; y: number; w: number; h: number };
-  }
-  interface ShapeRect {
-    position: Vec2DType;
-    size: Vec2DType;
-    relatedTo?: Vec2DType;
-    offset?: { x: number; y: number; w: number; h: number };
-    fill?: { color: [number, number, number]; alpha?: number };
-    round?: number;
-    stroke?: { size: number; color: [number, number, number] };
-  }
 }
