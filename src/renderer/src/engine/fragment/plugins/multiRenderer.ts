@@ -1,10 +1,12 @@
 import { ctx } from "../../main/engine";
+import { renderDebugerFrame, renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
 import Plugin from "./plugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
-type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
+type DisplayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
 interface SpriteConfiguration {
   sprite: ImageFileType;
   debugText: string | number;
+  offset: { x: number; y: number; w: number; h: number };
 }
 
 export interface SpritesheetConfiguration {
@@ -12,40 +14,71 @@ export interface SpritesheetConfiguration {
   crop: { x: number; y: number };
   cropSize: { width: number; height: number };
   debugText: string | number;
+  offset: { x: number; y: number; w: number; h: number };
 }
 interface ShapeConfiguration {
   fill?: { color: [number, number, number]; alpha?: number };
   round: number;
   stroke?: { size: number; color: [number, number, number] };
   debugText: string | number;
+  offset: { x: number; y: number; w: number; h: number };
 }
 
 export default class MultiRenderer extends Plugin {
   protected debug: boolean;
-  protected offset: { x: number; y: number; w: number; h: number };
   protected displayType?: DisplayT;
-  renderConfig!: displayConfig;
+  //   renderConfig!: displayConfig;
+  rendererList: { type: DisplayT; config: DisplayConfig }[];
   constructor(pluginProps: PluginProps) {
     super(pluginProps);
     this.debug = false;
-    this.offset = { x: 0, y: 0, w: 0, h: 0 };
-    this.debug = true;
-    this.renderObjects = [];
+    this.rendererList = [];
   }
-  addShape(shape) {
-    this.renderObjects.push({ crop: shape.crop, cropSize: shape.cropSize });
+  addShape(type: DisplayT, obj: DisplayConfig) {
+    this.rendererList.push({ type, config: obj });
   }
-  setSpritesheet(img) {
-    this.spritesheet = img;
+  getConfigFromIndex(index: number | undefined) {
+    if (!index) throw new Error("no index given");
+    if (this.rendererList[index].type !== "spritesheet")
+      throw new Error("index is not type of spritesheet");
+    return this.rendererList[index].config;
   }
   render() {
-    this.renderObjects.forEach((e) => this.renderSprite(e));
-    this.debug && this.renderDebugWindow();
-  }
-  createShape() {}
-  display(type, config) {
-    this.displayType = type;
-    this.e = config;
-    // console.log(this.style.spritesheet);
+    this.rendererList.forEach((e) => {
+      switch (e.type) {
+        case "shape":
+          renderRect({
+            position: this.position,
+            size: this.size,
+            relatedTo: this.relatedTo,
+            ...e.config
+          } as ShapeRect);
+          break;
+        case "sprite":
+          renderSprite({
+            position: this.position,
+            size: this.size,
+            relatedTo: this.relatedTo,
+            ...e.config
+          } as ShapeSprite);
+          break;
+        case "spritesheet":
+          renderSpriteSheet({
+            position: this.position,
+            size: this.size,
+            relatedTo: this.relatedTo,
+            ...e.config
+          } as ShapeSpritesheet);
+          break;
+      }
+      this.debug &&
+        renderDebugerFrame({
+          position: this.position,
+          size: this.size,
+          offset: e.config.offset,
+          relatedTo: this.relatedTo,
+          text: e.config.debugText as string
+        });
+    });
   }
 }

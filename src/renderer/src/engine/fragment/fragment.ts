@@ -1,7 +1,7 @@
 import { gameObjects, mapObjects } from "../main/engine";
 import { createRandomId, nameToUpper } from "../main/utils";
 import Vec2D, { Vec2DType } from "../main/vec2D";
-import fragmentPluginList from "./fragmentPluginList";
+import pluginList from "./pluginList";
 import Plugin from "./plugins/plugin";
 
 export default class Fragment {
@@ -54,12 +54,9 @@ export default class Fragment {
     }
   }
 
-  attachPlugin(
-    plugin: fragmentPluginListT,
-    options?: { bindThis?: boolean; overrideName?: string }
-  ) {
+  attachPlugin(plugin: PluginListT, options?: { bindThis?: boolean; overrideName?: string }) {
     this.attachedPlugins.push(
-      new fragmentPluginList[nameToUpper(plugin)]({
+      new pluginList[nameToUpper(plugin)]({
         position: this.position,
         size: this.size,
         layer: this.layer,
@@ -74,7 +71,7 @@ export default class Fragment {
         this.attachedPlugins[this.attachedPlugins.length - 1];
     }
   }
-  getPlugin<T>(name: fragmentPluginListT) {
+  getPlugin<T>(name: PluginListT) {
     return this.attachedPlugins.find((plugin) => plugin.constructor.name === nameToUpper(name)) as
       | T
       | undefined;

@@ -8,13 +8,9 @@ import UIFrame from "./src/engine/components/uiBackground";
 import Vec2D from "./src/engine/main/vec2D";
 function preload() {}
 function setup() {
-  // new Chest({
-  //   layer: "gameObjects",
-  //   tag: "my_animal_component",
-  //   pos: { x: -10, y: 150 },
-  //   size: { width: 80, height: 80 }
-  // });
-  // Array(2000)
+  // let xx = 0;
+  // let yy = 0;
+  // Array(2500)
   //   .fill(null)
   //   .forEach((e, i) => {
   //     if (i % 55 === 0) {
@@ -25,7 +21,7 @@ function setup() {
   //     xx++;
   //     new Tester({
   //       layer: "gameObjects",
-  //       tag: "front",
+  //       tags: ["front"],
   //       targetDistanceMessuring: "gameObject_player",
   //       pos: { x: xx * 11, y: yy * 11 },
   //       size: { width: 10, height: 10 }
@@ -98,10 +94,10 @@ function setup() {
 function update() {
   gameObjects.forEach((e) => e.update());
   uiObjects.forEach((e) => e.update());
-  // console.log(gameObjects[2].position.get());
 }
 function render() {
   cameraObjects.get("main")?.start();
+
   gameObjects.forEach((e) => e.render());
   cameraObjects.get("main")?.off();
   uiObjects.forEach((e) => e.render());

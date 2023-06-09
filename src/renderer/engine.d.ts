@@ -33,4 +33,29 @@ export declare global {
   }
   interface ImageFileType {}
   interface Vec2DType extends Vec2D {}
+  interface ShapeSprite {
+    sprite: ImageFileType;
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+  }
+  interface ShapeSpritesheet {
+    spritesheet: ImageFileType;
+    crop: { x: number; y: number };
+    cropSize: { width: number; height: number };
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+  }
+  interface ShapeRect {
+    position: Vec2DType;
+    size: Vec2DType;
+    relatedTo?: Vec2DType;
+    offset?: { x: number; y: number; w: number; h: number };
+    fill?: { color: [number, number, number]; alpha?: number };
+    round?: number;
+    stroke?: { size: number; color: [number, number, number] };
+  }
 }

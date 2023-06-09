@@ -1,4 +1,5 @@
 import { canvas, uiObjects } from "../main/engine";
+import { renderCircle } from "../main/shapes";
 import Vec2D from "../main/vec2D";
 import UIFrame from "../ui/uiFrame";
 import Slot, { SlotType } from "./slot";
@@ -8,13 +9,13 @@ export default class Inventory extends UIFrame {
   test: SlotType[];
   constructor() {
     super();
-    this.position = new Vec2D(70, 0);
+    this.position = new Vec2D(390, 10);
     this.visible = true;
     console.log(canvas.width);
     this.test = this.createGrid<SlotType>(Slot, {
       numberOfCols: 3,
       numberOfRows: 7,
-      startPoint: { x: canvas.width - 55, y: 10 },
+      startPoint: { x: 0, y: 5, relatedTo: this.position },
       sizeOfElement: { width: 55, height: 55 },
       gap: { x: 0, y: 0 }
     });
@@ -28,7 +29,9 @@ export default class Inventory extends UIFrame {
     uiObjects.push(this);
   }
 
-  setup() {}
+  setup() {
+    this.visible && this.test.forEach((e) => e.setup());
+  }
   update() {
     this.visible && this.test.forEach((e) => e.update());
 

@@ -2,7 +2,7 @@ import Fragment from "../fragment/fragment";
 import { gameObjects, uiObjects } from "../main/engine";
 
 export default class Chest extends Fragment {
-  // renderer!: RendererType;
+  renderer!: RendererType;
   keyEvents!: keyEventsType;
   player?: FragmentType | undefined;
   constructor(props: FragmentProps) {
@@ -11,13 +11,10 @@ export default class Chest extends Fragment {
     this.attachPlugin("keyEvents");
     this.attachPlugin("hitboxes", { bindThis: false });
     this.getPlugin<HitboxesType>("hitboxes")?.addHitbox("self", {
+      shape: "rect",
       active: true,
-      offset: {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0
-      }
+      visible: true,
+      size: { relatedTo: this.size, height: 0, width: 0 }
     });
     this.getPlugin<RendererType>("renderer")?.display("shape", {
       fill: { color: [200, 100, 100], alpha: 1 },
@@ -25,6 +22,7 @@ export default class Chest extends Fragment {
       round: 0,
       debugText: this.id
     });
+    // this.getPlugin<RendererType>("renderer")?.offsetVector({ x: 0, y: 0, w: 0, h: 0 });
     // this.getPlugin<HitboxesType>("hitboxes")?.setVisibleAll(true);
   }
   setup() {
@@ -33,6 +31,7 @@ export default class Chest extends Fragment {
     // console.log("🚀 ~ file: chest.ts:43 ~ Chest ~ setup ~ player:", this.player);
   }
   update() {
+    // this.keyEvents.onKeyPressed("space", () => console.log(this));
     // console.log(this.relatedTo);
     this.relatedTo?.add([0.2, 0]);
     super.update();

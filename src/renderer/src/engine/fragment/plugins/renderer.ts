@@ -1,4 +1,5 @@
 import { ctx } from "../../main/engine";
+import { renderDebugerFrame, renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
 import Plugin from "./plugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
 type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
@@ -34,21 +35,44 @@ export default class Renderer extends Plugin {
     this.displayType = type;
     this.renderConfig = config;
   }
-
+  getConfig() {
+    return this.renderConfig;
+  }
   render() {
     switch (this.displayType) {
       case "shape":
-        this.renderRect();
+        renderRect({
+          position: this.position,
+          size: this.size,
+          relatedTo: this.relatedTo,
+          ...this.renderConfig
+        } as ShapeRect);
         break;
       case "sprite":
-        this.renderSprite();
+        renderSprite({
+          position: this.position,
+          size: this.size,
+          relatedTo: this.relatedTo,
+          ...this.renderConfig
+        } as ShapeSprite);
         break;
       case "spritesheet":
-        this.renderSpriteSheet();
+        renderSpriteSheet({
+          position: this.position,
+          size: this.size,
+          relatedTo: this.relatedTo,
+          ...this.renderConfig
+        } as ShapeSpritesheet);
         break;
     }
-
-    this.debug && this.renderDebugerFrame();
+    this.debug &&
+      renderDebugerFrame({
+        position: this.position,
+        size: this.size,
+        offset: this.offset,
+        relatedTo: this.relatedTo,
+        text: this.renderConfig.debugText as string
+      });
   }
 
   change(props: displayConfig) {

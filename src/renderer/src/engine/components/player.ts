@@ -1,6 +1,7 @@
 import Fragment from "../fragment/fragment";
-import { canvas, canvasContainer, gameObjects, uiObjects } from "../main/engine";
+import { cameraObjects, canvas, canvasContainer, gameObjects, uiObjects } from "../main/engine";
 import { getMousePosition } from "../main/inputHandlers";
+import { renderCircle } from "../main/shapes";
 import { loadFile } from "../main/utils";
 import Vec2D from "../main/vec2D";
 import Inventory from "./inventory";
@@ -13,6 +14,7 @@ export default class Player extends Fragment {
   hitboxes!: HitboxesType;
   animator!: AnimatorType;
   directionalMovement!: DirectionalMovementType;
+  textRendering!: TextRenderingType;
   audio: AudioFileType;
   speed: number;
   static image: ImageFileType;
@@ -24,23 +26,34 @@ export default class Player extends Fragment {
     this.attachPlugin("directionalMovement");
     this.attachPlugin("hitboxes");
     this.attachPlugin("animator");
-    this.hitboxes.addHitbox("self", {
-      active: true,
-      offset: {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0
-      }
+    this.attachPlugin("textRendering");
+    this.textRendering.settings({
+      text: "Lorem Ipsum",
+      font: "Arial",
+      fontSize: 18,
+      fontWeight: 900,
+      align: { Xaxis: "left", Yaxis: "top" },
+      color: [50, 250, 50],
+      offset: { x: 0, y: 0 },
+      padding: { left: 0, right: 0, top: 0, bottom: 0 },
+      box: { width: 200, height: 300 }
     });
+
+    this.hitboxes.addHitbox("self", {
+      shape: "rect",
+      active: true,
+      size: { width: 0, height: 0, relatedTo: this.size }
+    });
+    this.animator.geRenderer(this.renderer);
     this.animator.setAnimationData({
       top: { numberOfFrames: 6, rowInSpritesheet: 4 },
       down: { numberOfFrames: 6, rowInSpritesheet: 1 },
       left: { numberOfFrames: 6, rowInSpritesheet: 2 },
       right: { numberOfFrames: 6, rowInSpritesheet: 3, startAnimation: true }
     });
-    this.renderer.debug = true;
-    // this.hitboxes.setVisibleAll(true);
+    // this.renderer.debug = true;
+    this.hitboxes.setVisibleAll(true);
+    // console.log(this.hitboxes.get("circle"));
     this.audio = loadFile<AudioFileType>("audio", mp3);
     Player.image = loadFile<ImageFileType>("img", frame);
     // this.renderer.display("shape", {
@@ -63,13 +76,21 @@ export default class Player extends Fragment {
     // this.animator.overrideRenderer(this.renderer);
     // this.renderer.display("sprite", { sprite: this.image });
     // this.hitboxes.removeHitbox("se");
-    this.mouseEvents.addEvent("left", () => this.animator.changeState("top"));
+    this.mouseEvents.addEvent("left", () => {});
     this.mouseEvents.addEvent("middle", () => console.log("midd"));
     this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
-    new Inventory();
+    // new Inventory();
   }
   update() {
-    this.handleMove();
+    // console.log(this.hitboxes.get("self")?.vectors);
+
+    // if (
+    //   this.hitboxes.intersectsRR(
+    //     this.hitboxes.get("self")!,
+    //     gameObjects[0].getPlugin<HitboxesType>("hitboxes")!.get("self")!
+    //   )
+    // )
+    //   console.log("col");
     // if (this.up) {
     //   if (this.position.get().x < 400) this.directionalMovement.seset(400, 100);
     //   if (
@@ -87,11 +108,11 @@ export default class Player extends Fragment {
     //   }
     // }
     this.keyEvents.onKeyPressed("space", () => {
-      // this.directionalMovement.moveToPoint(new Vec2D(0, 0));
-      // window.api.res();
+      this.textRendering.change({ color: [0, 0, 0] });
     });
     // this.directionalMovement.moveTo();
     // this.directionalMovement.angleToDirection(10);
+    this.handleMove();
     super.update();
   }
 
@@ -100,6 +121,7 @@ export default class Player extends Fragment {
     target: FragmentType,
     direction: [number, number, number, number]
   ) {
+    // return false;
     if (
       this.hitboxes.get("self") &&
       target.getPlugin<HitboxesType>("hitboxes")?.get("self") &&

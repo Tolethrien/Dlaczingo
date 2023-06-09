@@ -53,6 +53,7 @@ export default class Engine {
     canvas.style.display = "inline-block";
     ctx.textBaseline = "bottom";
     ctx.textAlign = "start";
+    ctx.globalCompositeOperation = "source-over";
     this.setup();
     keysHandles();
     mouseHandlers(canvas, cameraObjects.get("main"));
@@ -65,6 +66,7 @@ export default class Engine {
     fixedTime = Number(((performance.now() - this.oldTimeStamp) / 1000).toFixed(4));
     this.oldTimeStamp = Number(performance.now().toFixed(4));
     this.update();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(
       cameraObjects.get("main")?.zoom ?? 1,

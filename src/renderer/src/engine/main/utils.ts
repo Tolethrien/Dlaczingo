@@ -1,11 +1,9 @@
-// load File
-
+//=====================================
 export function loadFile(fileType: "img" | "audio", file: string): AudioFileType | ImageFileType;
 export function loadFile<T extends AudioFileType | ImageFileType>(
   fileType: "img" | "audio",
   file: string
 ): T;
-
 export function loadFile(fileType: "img" | "audio", file: string) {
   switch (fileType) {
     case "img": {
@@ -22,5 +20,11 @@ export function loadFile(fileType: "img" | "audio", file: string) {
 }
 //=====================================
 export const createRandomId = () => "_" + Math.random().toString(36).substring(2, 9);
+//=====================================
 export const nameToUpper = (name: string) =>
   [name[0].toUpperCase(), name.slice(1)].toString().replace(",", "");
+//=====================================
+export const loadFont = () => {
+  return new FontFace("test", "url(x)");
+};
+//=====================================
