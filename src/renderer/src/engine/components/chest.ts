@@ -1,5 +1,5 @@
 import Fragment from "../fragment/fragment";
-import { gameObjects, uiObjects } from "../main/engine";
+import { gameObjects } from "../main/engine";
 
 export default class Chest extends Fragment {
   renderer!: RendererType;
@@ -13,8 +13,12 @@ export default class Chest extends Fragment {
     this.getPlugin<HitboxesType>("hitboxes")?.addHitbox("self", {
       shape: "rect",
       active: true,
-      visible: true,
       size: { relatedTo: this.size, height: 0, width: 0 }
+    });
+    this.getPlugin<HitboxesType>("hitboxes")?.addHitbox("selfC", {
+      shape: "elipse",
+      active: true,
+      size: { radius: 0, relatedTo: this.size }
     });
     this.getPlugin<RendererType>("renderer")?.display("shape", {
       fill: { color: [200, 100, 100], alpha: 1 },
@@ -22,31 +26,14 @@ export default class Chest extends Fragment {
       round: 0,
       debugText: this.id
     });
-    // this.getPlugin<RendererType>("renderer")?.offsetVector({ x: 0, y: 0, w: 0, h: 0 });
     // this.getPlugin<HitboxesType>("hitboxes")?.setVisibleAll(true);
   }
   setup() {
     super.setup();
     this.player = gameObjects.find((e) => e.tags.includes("gameObject_player"));
-    // console.log("🚀 ~ file: chest.ts:43 ~ Chest ~ setup ~ player:", this.player);
   }
   update() {
     // this.keyEvents.onKeyPressed("space", () => console.log(this));
-    // console.log(this.relatedTo);
-    this.relatedTo?.add([0.2, 0]);
     super.update();
   }
-  // test() {
-  //   if (
-  //     this.hitboxes.get("self") &&
-  //     this.player?.hitboxes.get("self") &&
-  //     this.hitboxes.willBeColliding(
-  //       this.hitboxes.get("self")!,
-  //       this.player!.hitboxes.get("self")!,
-  //       [30, 30, 0, 0]
-  //     )
-  //   ) {
-  //     console.log("koliduje");
-  //   }
-  // }
 }

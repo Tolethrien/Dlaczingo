@@ -3,9 +3,6 @@ import Tester from "./src/engine/components/tester";
 import Chest from "./src/engine/components/chest";
 import Player from "./src/engine/components/player";
 import Camera from "./src/engine/components/camera";
-import UIElement from "./src/engine/ui/uiElement";
-import UIFrame from "./src/engine/components/uiBackground";
-import Vec2D from "./src/engine/main/vec2D";
 function preload() {}
 function setup() {
   // let xx = 0;
@@ -83,7 +80,7 @@ function setup() {
   new Player({
     layer: "gameObjects",
     tags: ["gameObject_player"],
-    pos: { x: 120, y: 160 },
+    pos: { x: 120, y: 500 },
     size: { width: 80, height: 80 }
   });
   cameraObjects.get("main")?.setZoom(1);

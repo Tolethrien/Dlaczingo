@@ -28,6 +28,8 @@ interface AddHitboxProps {
     | (CircleSizeProps & { width?: never; height?: never })
     | (RectangleSizeProps & { radius?: never });
 }
+type ModifierRect = [number, number, number, number];
+type ModifierElipse = [number];
 export default class Hitboxes extends Plugin {
   private hitboxes: Map<string, hitboxValues>;
   constructor(props: PluginProps) {
@@ -76,7 +78,7 @@ export default class Hitboxes extends Plugin {
   removeHitbox(name: string) {
     this.hitboxes.has(name)
       ? this.hitboxes.delete(name)
-      : console.log(`${name} is not exist on hitboxes list`);
+      : console.warn(`${name} is not exist on hitboxes list`);
   }
 
   get(hitboxName: string) {
@@ -111,7 +113,45 @@ export default class Hitboxes extends Plugin {
     this.hitboxes.forEach((hitbox) => (hitbox.visible = value));
   }
 
-  colideCircleWithRectangle(circle: hitboxValues, rect: hitboxValues) {
+  isColliding(hitbox: hitboxValues, target: hitboxValues) {
+    if (!hitbox.active || !target.active || hitbox === target) return;
+    if (hitbox.shape === "rect" && target.shape === "rect")
+      return this.colideRectangleWithRectangle(hitbox, target);
+    else if (
+      (hitbox.shape === "elipse" && target.shape === "rect") ||
+      (hitbox.shape === "rect" && target.shape === "elipse")
+    )
+      return this.colideCircleWithRectangle(
+        hitbox.shape === "elipse" ? hitbox : target,
+        hitbox.shape === "rect" ? hitbox : target
+      );
+    else if (hitbox.shape === "elipse" && target.shape === "elipse")
+      return this.colideCircleWithCircle(hitbox, target);
+    return Error("none of those are rect or elipse");
+  }
+  willBeColliding(
+    hitbox: hitboxValues,
+    target: hitboxValues,
+    modifier: ModifierElipse | ModifierRect
+  ) {
+    if (!hitbox.active || !target.active || hitbox === target) return;
+    if (hitbox.shape === "rect" && target.shape === "rect")
+      return this.willColideRectangleWithRectangle(hitbox, target, modifier as ModifierRect);
+    else if (hitbox.shape === "elipse" && target.shape === "elipse")
+      return this.willColideCircleWithCircle(hitbox, target, modifier as ModifierElipse);
+    else if (
+      (hitbox.shape === "elipse" && target.shape === "rect") ||
+      (hitbox.shape === "rect" && target.shape === "elipse")
+    )
+      return this.willCollideCircleWithRectangle(
+        hitbox.shape === "elipse" ? hitbox : target,
+        hitbox.shape === "rect" ? hitbox : target,
+        modifier as ModifierRect
+      );
+    return Error("none of those are rect or elipse");
+  }
+
+  private colideCircleWithRectangle(circle: hitboxValues, rect: hitboxValues) {
     const distX = Math.round(Math.abs(circle.vectors[0] - rect.vectors[0] - rect.vectors[2] / 2));
     const distY = Math.round(Math.abs(circle.vectors[1] - rect.vectors[1] - rect.vectors[3] / 2));
     if (
@@ -125,14 +165,14 @@ export default class Hitboxes extends Plugin {
       Math.sqrt(circle.vectors[2] ** 2)
     );
   }
-  colideCircleWithCircle(circleA: hitboxValues, circleB: hitboxValues) {
+  private colideCircleWithCircle(circleA: hitboxValues, circleB: hitboxValues) {
     return (
       (circleA.vectors[2] + circleB.vectors[2]) ** 2 >
       (circleB.vectors[0] - circleA.vectors[0]) ** 2 +
         (circleB.vectors[1] - circleA.vectors[1]) ** 2
     );
   }
-  colideRectangleWithRectangle(hitbox: hitboxValues, target: hitboxValues) {
+  private colideRectangleWithRectangle(hitbox: hitboxValues, target: hitboxValues) {
     if (!hitbox.active || hitbox === target) return;
     return (
       hitbox.vectors[1] + hitbox.vectors[3] > target.vectors[1] &&
@@ -142,13 +182,12 @@ export default class Hitboxes extends Plugin {
       true
     );
   }
-  willBeColliding(
+  private willColideRectangleWithRectangle(
     hitbox: hitboxValues,
     target: hitboxValues,
-    modifier: [number, number, number, number]
+    modifier: ModifierRect
   ) {
     if (!hitbox.active || hitbox === target) return;
-
     return (
       hitbox.vectors[1] + hitbox.vectors[3] + modifier[2] > target.vectors[1] &&
       hitbox.vectors[1] - modifier[0] < target.vectors[1] + target.vectors[3] &&
@@ -157,6 +196,52 @@ export default class Hitboxes extends Plugin {
       true
     );
   }
+  private willColideCircleWithCircle(
+    circleA: hitboxValues,
+    circleB: hitboxValues,
+    modifier: ModifierElipse
+  ) {
+    return (
+      (circleA.vectors[2] + modifier[0] + circleB.vectors[2]) ** 2 >
+      (circleB.vectors[0] - circleA.vectors[0]) ** 2 +
+        (circleB.vectors[1] - circleA.vectors[1]) ** 2
+    );
+  }
+
+  private willCollideCircleWithRectangle(
+    circle: hitboxValues,
+    rect: hitboxValues,
+    modifier: ModifierRect
+  ) {
+    const distX = Math.round(
+      Math.abs(
+        circle.vectors[0] +
+          (modifier[0] !== 0 ? modifier[0] : -modifier[2]) -
+          rect.vectors[0] -
+          rect.vectors[2] / 2
+      )
+    );
+    const distY = Math.round(
+      Math.abs(
+        circle.vectors[1] +
+          (modifier[1] !== 0 ? modifier[1] : -modifier[3]) -
+          rect.vectors[1] -
+          rect.vectors[3] / 2
+      )
+    );
+    if (
+      distX > rect.vectors[2] / 2 + circle.vectors[2] ||
+      distY > rect.vectors[3] / 2 + circle.vectors[2]
+    )
+      return false;
+    if (distX <= rect.vectors[2] / 2 || distY <= rect.vectors[3] / 2) return true;
+
+    return (
+      Math.sqrt((distX - rect.vectors[2] / 2) ** 2 + (distY - rect.vectors[3] / 2) ** 2) <=
+      Math.sqrt(circle.vectors[2] ** 2)
+    );
+  }
+
   private hitboxFrame(shape: hitboxValues["shape"], vector: hitboxValues["vectors"]) {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgb(255, 255, 0)";

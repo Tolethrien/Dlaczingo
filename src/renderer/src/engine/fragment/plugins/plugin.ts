@@ -18,10 +18,10 @@ export default abstract class Plugin {
     this.relatedTo = relatedTo;
   }
 
-  setup(): void {}
-  update(): void {}
-  render(): void {}
-  getSibling<T>(name: fragmentPluginListT) {
+  protected setup(): void {}
+  protected update(): void {}
+  protected render(): void {}
+  protected getSibling<T>(name: PluginListT) {
     return this.siblings.find((plugin) => plugin.constructor.name === nameToUpper(name)) as
       | T
       | undefined;

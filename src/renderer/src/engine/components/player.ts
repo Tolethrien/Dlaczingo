@@ -1,9 +1,6 @@
 import Fragment from "../fragment/fragment";
-import { cameraObjects, canvas, canvasContainer, gameObjects, uiObjects } from "../main/engine";
-import { getMousePosition } from "../main/inputHandlers";
-import { renderCircle } from "../main/shapes";
+import { gameObjects } from "../main/engine";
 import { loadFile } from "../main/utils";
-import Vec2D from "../main/vec2D";
 import Inventory from "./inventory";
 import mp3 from "/12.mp3";
 import frame from "/char.png";
@@ -32,17 +29,21 @@ export default class Player extends Fragment {
       font: "Arial",
       fontSize: 18,
       fontWeight: 900,
-      align: { Xaxis: "left", Yaxis: "top" },
+      align: { Xaxis: "center", Yaxis: "top" },
       color: [50, 250, 50],
-      offset: { x: 0, y: 0 },
+      offset: { x: -20, y: -20 },
       padding: { left: 0, right: 0, top: 0, bottom: 0 },
-      box: { width: 200, height: 300 }
+      box: { width: this.size.get().x + 40, height: this.size.get().y }
     });
-
     this.hitboxes.addHitbox("self", {
       shape: "rect",
       active: true,
       size: { width: 0, height: 0, relatedTo: this.size }
+    });
+    this.hitboxes.addHitbox("selfC", {
+      shape: "elipse",
+      active: true,
+      size: { radius: 0, relatedTo: this.size }
     });
     this.animator.geRenderer(this.renderer);
     this.animator.setAnimationData({
@@ -52,8 +53,7 @@ export default class Player extends Fragment {
       right: { numberOfFrames: 6, rowInSpritesheet: 3, startAnimation: true }
     });
     // this.renderer.debug = true;
-    this.hitboxes.setVisibleAll(true);
-    // console.log(this.hitboxes.get("circle"));
+    // this.hitboxes.setVisibleAll(true);
     this.audio = loadFile<AudioFileType>("audio", mp3);
     Player.image = loadFile<ImageFileType>("img", frame);
     // this.renderer.display("shape", {
@@ -73,45 +73,15 @@ export default class Player extends Fragment {
     });
     this.speed = 5;
     this.directionalMovement.setMovemmentSpeed(this.speed);
-    // this.animator.overrideRenderer(this.renderer);
-    // this.renderer.display("sprite", { sprite: this.image });
-    // this.hitboxes.removeHitbox("se");
     this.mouseEvents.addEvent("left", () => {});
     this.mouseEvents.addEvent("middle", () => console.log("midd"));
     this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
-    // new Inventory();
+    new Inventory();
   }
   update() {
-    // console.log(this.hitboxes.get("self")?.vectors);
-
-    // if (
-    //   this.hitboxes.intersectsRR(
-    //     this.hitboxes.get("self")!,
-    //     gameObjects[0].getPlugin<HitboxesType>("hitboxes")!.get("self")!
-    //   )
-    // )
-    //   console.log("col");
-    // if (this.up) {
-    //   if (this.position.get().x < 400) this.directionalMovement.seset(400, 100);
-    //   if (
-    //     this.position.get().x > 399 &&
-    //     this.position.get().x < 405 &&
-    //     this.position.get().y > 99
-    //   ) {
-    //     this.directionalMovement.seset(400, 300);
-    //   }
-    //   if (this.position.get().y > 299) {
-    //     this.directionalMovement.seset(600, 200);
-    //   }
-    //   if (this.position.get().x > 598) {
-    //     this.directionalMovement.seset(400, 100);
-    //   }
-    // }
     this.keyEvents.onKeyPressed("space", () => {
       this.textRendering.change({ color: [0, 0, 0] });
     });
-    // this.directionalMovement.moveTo();
-    // this.directionalMovement.angleToDirection(10);
     this.handleMove();
     super.update();
   }
@@ -247,13 +217,11 @@ export default class Player extends Fragment {
         if (target) {
           this.directionalMovement.stopMovement();
           if (this.position.get().y + this.size.get().y > target.position.get().y) {
-            console.log("bok");
             this.position.add([
               -(this.position.get().x - (target.position.get().x + target.size.get().x)),
               0
             ]);
           } else if (this.position.get().x < target.position.get().x + target.size.get().x) {
-            console.log("dol");
             this.position.add([
               0,
               target.position.get().y - (this.position.get().y + this.size.get().y)
@@ -270,13 +238,11 @@ export default class Player extends Fragment {
         if (target) {
           this.directionalMovement.stopMovement();
           if (this.position.get().y + this.size.get().y > target.position.get().y) {
-            console.log("bok");
             this.position.add([
               target.position.get().x - (this.position.get().x + this.size.get().x),
               0
             ]);
           } else if (this.position.get().x < target.position.get().x + target.size.get().x) {
-            console.log("dol");
             this.position.add([
               0,
               target.position.get().y - (this.position.get().y + this.size.get().y)

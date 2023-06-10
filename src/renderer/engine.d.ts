@@ -8,6 +8,8 @@ export declare global {
     preload: () => void;
     render: () => void;
     fps: boolean;
+    // preCollisionDetection: "QuadTree";
+    // collisionDetection: "AABB";
   }
   interface FPSM {
     tick: () => void;
