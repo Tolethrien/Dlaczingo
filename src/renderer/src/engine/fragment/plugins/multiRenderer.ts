@@ -38,9 +38,7 @@ export default class MultiRenderer extends Plugin {
     this.rendererList.push({ type, config: obj });
   }
   getConfigFromIndex(index: number | undefined) {
-    if (!index) throw new Error("no index given");
-    if (this.rendererList[index].type !== "spritesheet")
-      throw new Error("index is not type of spritesheet");
+    if (index === undefined) throw new Error("no index given");
     return this.rendererList[index].config;
   }
   render() {

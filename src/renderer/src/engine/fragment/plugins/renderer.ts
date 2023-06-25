@@ -85,133 +85,133 @@ export default class Renderer extends Plugin {
   offsetVector(offset: { x: number; y: number; w: number; h: number }) {
     this.offset = offset;
   }
-  private renderSprite() {
-    ctx.drawImage(
-      (this.renderConfig as SpriteConfiguration).sprite as HTMLImageElement,
-      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-        this.position.getRound().x +
-        (this.offset ? this.offset.x : 0),
-      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-        this.position.getRound().y +
-        (this.offset ? this.offset.y : 0),
-      this.size.get().x + (this.offset ? this.offset.w : 0),
-      this.size.get().y + (this.offset ? this.offset.h : 0)
-    );
-  }
-  private renderSpriteSheet() {
-    if ("spritesheet" in this.renderConfig) {
-      ctx.drawImage(
-        this.renderConfig.spritesheet as HTMLImageElement,
-        this.renderConfig.crop.x,
-        this.renderConfig.crop.y,
-        this.renderConfig.cropSize.width,
-        this.renderConfig.cropSize.height,
-        (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-          this.position.getRound().x +
-          (this.offset ? this.offset.x : 0),
-        (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-          this.position.getRound().y +
-          (this.offset ? this.offset.y : 0),
-        this.size.get().x + (this.offset ? this.offset.w : 0),
-        this.size.get().y + (this.offset ? this.offset.h : 0)
-      );
-    }
-  }
-  private renderRect() {
-    if ("round" in this.renderConfig) {
-      ctx.beginPath();
-      if (this.renderConfig.fill) {
-        ctx.fillStyle = `rgba(${this.renderConfig.fill.color}, ${
-          this.renderConfig.fill.alpha ?? 1
-        })`;
-        ctx.roundRect(
-          (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-            this.position.getRound().x +
-            (this.offset ? this.offset.x : 0) +
-            (this.renderConfig.stroke ? 1 : 0),
-          (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-            this.position.getRound().y +
-            (this.offset ? this.offset.y : 0) +
-            (this.renderConfig.stroke ? 1 : 0),
-          this.size.get().x +
-            (this.offset ? this.offset.w : 0) -
-            (this.renderConfig.stroke ? 2 : 0),
-          this.size.get().y +
-            (this.offset ? this.offset.h : 0) -
-            (this.renderConfig.stroke ? 2 : 0),
-          this.renderConfig.round ?? 0
-        );
-        ctx.fill();
-      }
-      // drawing stroke with this.offset to inside
-      if (this.renderConfig.stroke) {
-        ctx.lineWidth = this.renderConfig.stroke.size;
-        ctx.strokeStyle = `rgba(${this.renderConfig.stroke.color})`;
-        ctx.roundRect(
-          (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-            this.position.getRound().x +
-            (this.offset ? this.offset.x : 0) +
-            this.renderConfig.stroke.size / 2,
-          (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-            this.position.getRound().y +
-            (this.offset ? this.offset.y : 0) +
-            this.renderConfig.stroke.size / 2,
-          this.size.get().x + (this.offset ? this.offset.w : 0) - this.renderConfig.stroke.size,
-          this.size.get().y + (this.offset ? this.offset.h : 0) - this.renderConfig.stroke.size,
-          this.renderConfig.round ?? 0
-        );
-        ctx.stroke();
-      }
-      ctx.closePath();
-    }
-  }
-  private renderDebugerFrame() {
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    //stroke
-    ctx.strokeStyle = "rgb(100, 255, 0)";
-    //dot
-    ctx.fillStyle = "rgb(0, 255, 0)";
-    ctx.roundRect(
-      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-        this.position.getRound().x +
-        (this.offset ? this.offset.x : 0),
-      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-        this.position.getRound().y +
-        (this.offset ? this.offset.y : 0),
-      this.size.get().x + (this.offset ? this.offset.w : 0) - 2,
-      this.size.get().y + (this.offset ? this.offset.h : 0) - 2,
-      0
-    );
-    ctx.fillRect(
-      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-        this.position.getRound().x +
-        (this.offset ? this.offset.x : 0) +
-        this.size.get().x / 2 -
-        1,
-      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-        this.position.getRound().y +
-        (this.offset ? this.offset.y : 0) +
-        this.size.get().y / 2 -
-        1,
-      2,
-      2
-    );
-    ctx.stroke();
-    ctx.font = `${this.size.get().x / 2 - this.size.get().x / 4}px Arial`;
-    ctx.fillText(
-      this.renderConfig.debugText as string,
-      (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-        this.position.getRound().x +
-        (this.offset ? this.offset.x : 0) +
-        4,
-      (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-        this.position.getRound().y +
-        (this.offset ? this.offset.y : 0) +
-        this.size.get().x / 2 -
-        this.size.get().x / 5,
-      this.size.get().x - this.size.get().x / 8
-    );
-    ctx.closePath();
-  }
+  // private renderSprite() {
+  //   ctx.drawImage(
+  //     (this.renderConfig as SpriteConfiguration).sprite as HTMLImageElement,
+  //     (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //       this.position.getRound().x +
+  //       (this.offset ? this.offset.x : 0),
+  //     (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //       this.position.getRound().y +
+  //       (this.offset ? this.offset.y : 0),
+  //     this.size.get().x + (this.offset ? this.offset.w : 0),
+  //     this.size.get().y + (this.offset ? this.offset.h : 0)
+  //   );
+  // }
+  // private renderSpriteSheet() {
+  //   if ("spritesheet" in this.renderConfig) {
+  //     ctx.drawImage(
+  //       this.renderConfig.spritesheet as HTMLImageElement,
+  //       this.renderConfig.crop.x,
+  //       this.renderConfig.crop.y,
+  //       this.renderConfig.cropSize.width,
+  //       this.renderConfig.cropSize.height,
+  //       (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //         this.position.getRound().x +
+  //         (this.offset ? this.offset.x : 0),
+  //       (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //         this.position.getRound().y +
+  //         (this.offset ? this.offset.y : 0),
+  //       this.size.get().x + (this.offset ? this.offset.w : 0),
+  //       this.size.get().y + (this.offset ? this.offset.h : 0)
+  //     );
+  //   }
+  // }
+  // private renderRect() {
+  //   if ("round" in this.renderConfig) {
+  //     ctx.beginPath();
+  //     if (this.renderConfig.fill) {
+  //       ctx.fillStyle = `rgba(${this.renderConfig.fill.color}, ${
+  //         this.renderConfig.fill.alpha ?? 1
+  //       })`;
+  //       ctx.roundRect(
+  //         (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //           this.position.getRound().x +
+  //           (this.offset ? this.offset.x : 0) +
+  //           (this.renderConfig.stroke ? 1 : 0),
+  //         (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //           this.position.getRound().y +
+  //           (this.offset ? this.offset.y : 0) +
+  //           (this.renderConfig.stroke ? 1 : 0),
+  //         this.size.get().x +
+  //           (this.offset ? this.offset.w : 0) -
+  //           (this.renderConfig.stroke ? 2 : 0),
+  //         this.size.get().y +
+  //           (this.offset ? this.offset.h : 0) -
+  //           (this.renderConfig.stroke ? 2 : 0),
+  //         this.renderConfig.round ?? 0
+  //       );
+  //       ctx.fill();
+  //     }
+  //     // drawing stroke with this.offset to inside
+  //     if (this.renderConfig.stroke) {
+  //       ctx.lineWidth = this.renderConfig.stroke.size;
+  //       ctx.strokeStyle = `rgba(${this.renderConfig.stroke.color})`;
+  //       ctx.roundRect(
+  //         (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //           this.position.getRound().x +
+  //           (this.offset ? this.offset.x : 0) +
+  //           this.renderConfig.stroke.size / 2,
+  //         (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //           this.position.getRound().y +
+  //           (this.offset ? this.offset.y : 0) +
+  //           this.renderConfig.stroke.size / 2,
+  //         this.size.get().x + (this.offset ? this.offset.w : 0) - this.renderConfig.stroke.size,
+  //         this.size.get().y + (this.offset ? this.offset.h : 0) - this.renderConfig.stroke.size,
+  //         this.renderConfig.round ?? 0
+  //       );
+  //       ctx.stroke();
+  //     }
+  //     ctx.closePath();
+  //   }
+  // }
+  // private renderDebugerFrame() {
+  //   ctx.beginPath();
+  //   ctx.lineWidth = 2;
+  //   //stroke
+  //   ctx.strokeStyle = "rgb(100, 255, 0)";
+  //   //dot
+  //   ctx.fillStyle = "rgb(0, 255, 0)";
+  //   ctx.roundRect(
+  //     (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //       this.position.getRound().x +
+  //       (this.offset ? this.offset.x : 0),
+  //     (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //       this.position.getRound().y +
+  //       (this.offset ? this.offset.y : 0),
+  //     this.size.get().x + (this.offset ? this.offset.w : 0) - 2,
+  //     this.size.get().y + (this.offset ? this.offset.h : 0) - 2,
+  //     0
+  //   );
+  //   ctx.fillRect(
+  //     (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //       this.position.getRound().x +
+  //       (this.offset ? this.offset.x : 0) +
+  //       this.size.get().x / 2 -
+  //       1,
+  //     (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //       this.position.getRound().y +
+  //       (this.offset ? this.offset.y : 0) +
+  //       this.size.get().y / 2 -
+  //       1,
+  //     2,
+  //     2
+  //   );
+  //   ctx.stroke();
+  //   ctx.font = `${this.size.get().x / 2 - this.size.get().x / 4}px Arial`;
+  //   ctx.fillText(
+  //     this.renderConfig.debugText as string,
+  //     (this.relatedTo ? this.relatedTo.getRound().x : 0) +
+  //       this.position.getRound().x +
+  //       (this.offset ? this.offset.x : 0) +
+  //       4,
+  //     (this.relatedTo ? this.relatedTo.getRound().y : 0) +
+  //       this.position.getRound().y +
+  //       (this.offset ? this.offset.y : 0) +
+  //       this.size.get().x / 2 -
+  //       this.size.get().x / 5,
+  //     this.size.get().x - this.size.get().x / 8
+  //   );
+  //   ctx.closePath();
+  // }
 }

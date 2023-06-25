@@ -12,7 +12,12 @@ export default class Vec2D {
     }
   }
   public set(x: number, y: number) {
-    this.vector = [Math.round(x), Math.round(y)];
+    this.vector = [x, y];
+  }
+  public setAxis(axis: "x" | "y", value: number) {
+    axis === "x"
+      ? (this.vector = [value, this.vector[1]])
+      : (this.vector = [this.vector[0], value]);
   }
   public sub(targetVec: Vec2DType | [number, number]) {
     if (Array.isArray(targetVec)) {

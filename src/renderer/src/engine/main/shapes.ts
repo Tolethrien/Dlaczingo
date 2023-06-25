@@ -185,3 +185,25 @@ export function renderCircle({
   ctx.closePath();
   ctx.stroke();
 }
+export class ClipShape {
+  private region: Path2D;
+  constructor() {
+    this.region = new Path2D();
+  }
+  start() {
+    ctx.save();
+    ctx.clip(this.region, "evenodd");
+  }
+  end() {
+    ctx.restore();
+  }
+  newPath(type: "rect" | "ellipse", shape: { x: number; y: number; w: number; h: number }) {
+    console.log(this.region);
+    type === "rect"
+      ? this.region.rect(shape.x, shape.y, shape.w, shape.h)
+      : this.region.ellipse(shape.x, shape.y, shape.w, shape.h, 0, 0, 2 * Math.PI);
+  }
+  get getPath() {
+    return this.region;
+  }
+}

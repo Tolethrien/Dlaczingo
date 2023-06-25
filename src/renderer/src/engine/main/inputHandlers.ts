@@ -2,6 +2,7 @@ import { CameraType } from "../components/camera";
 
 export let mousePressed = false;
 const mousePosition: [number, number, number, number] = [0, 0, 0, 0];
+export let mouseDelta = { x: 0, y: 0 };
 export const mouseProxymityList = new Set<MouseEventsType>();
 
 export const getMousePosition = (state: "fixed" | "translated") => {
@@ -27,6 +28,18 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
       // setTimeout(() => mouseProxymityList.clear(), 0);
       mouseProxymityList.clear();
     }
+  };
+  let ClearScroll: NodeJS.Timer | null = null;
+  canvas.onwheel = (e) => {
+    mouseDelta = { x: e.deltaX, y: e.deltaY };
+    if (ClearScroll) {
+      clearInterval(ClearScroll);
+    }
+    ClearScroll = setInterval(() => {
+      mouseDelta = { x: 0, y: 0 };
+      clearInterval(ClearScroll as NodeJS.Timer);
+      ClearScroll = null;
+    }, 50);
   };
   // context button
   canvas.oncontextmenu = () => {

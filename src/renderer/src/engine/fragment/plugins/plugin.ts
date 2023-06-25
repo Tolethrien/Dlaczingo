@@ -18,9 +18,9 @@ export default abstract class Plugin {
     this.relatedTo = relatedTo;
   }
 
-  protected setup(): void {}
-  protected update(): void {}
-  protected render(): void {}
+  protected setup?(): void;
+  protected update?(): void;
+  protected render?(): void;
   protected getSibling<T>(name: PluginListT) {
     return this.siblings.find((plugin) => plugin.constructor.name === nameToUpper(name)) as
       | T

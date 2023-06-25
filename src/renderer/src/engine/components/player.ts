@@ -23,18 +23,18 @@ export default class Player extends Fragment {
     this.attachPlugin("directionalMovement");
     this.attachPlugin("hitboxes");
     this.attachPlugin("animator");
-    this.attachPlugin("textRendering");
-    this.textRendering.settings({
-      text: "Lorem Ipsum",
-      font: "Arial",
-      fontSize: 18,
-      fontWeight: 900,
-      align: { Xaxis: "center", Yaxis: "top" },
-      color: [50, 250, 50],
-      offset: { x: -20, y: -20 },
-      padding: { left: 0, right: 0, top: 0, bottom: 0 },
-      box: { width: this.size.get().x + 40, height: this.size.get().y }
-    });
+    // this.attachPlugin("textRendering");
+    // this.textRendering.settings({
+    //   text: "Lorem Ipsum",
+    //   font: "Arial",
+    //   fontSize: 18,
+    //   fontWeight: 900,
+    //   align: { Xaxis: "center", Yaxis: "top" },
+    //   color: [50, 250, 50],
+    //   offset: { x: -20, y: -20 },
+    //   padding: { left: 0, right: 0, top: 0, bottom: 0 },
+    //   box: { width: this.size.get().x + 40, height: this.size.get().y }
+    // });
     this.hitboxes.addHitbox("self", {
       shape: "rect",
       active: true,
@@ -76,7 +76,7 @@ export default class Player extends Fragment {
     this.mouseEvents.addEvent("left", () => {});
     this.mouseEvents.addEvent("middle", () => console.log("midd"));
     this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
-    new Inventory();
+    // new Inventory();
   }
   update() {
     this.keyEvents.onKeyPressed("space", () => {

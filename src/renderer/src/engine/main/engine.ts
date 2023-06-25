@@ -1,4 +1,5 @@
 import { CameraType } from "../components/camera";
+import UIFrame from "../ui/uiFrame";
 import { keysHandles, mouseHandlers } from "./inputHandlers";
 
 (function () {
@@ -11,21 +12,30 @@ export const canvasContainer = document.getElementById("CanvasContainer")!;
 const loadingScreen = document.getElementById("loadingScreen")!;
 export const canvas = document.getElementById("gameWindow") as HTMLCanvasElement;
 export const ctx = canvas.getContext("2d")!;
-// setResolution();
 const messureTime = document.getElementById("fps-output");
 messureTime!.innerText = String(0);
 export const gameObjects: FragmentType[] = [];
 export const mapObjects: FragmentType[] = [];
-export const uiObjects: FragmentType[] = [];
+export const uiObjects: UIFrame[] = [];
 export const cameraObjects: Map<string, CameraType> = new Map();
+// setSizeofCanvas();
+export const canvasBox = {
+  RIGHT: canvas.width,
+  LEFT: 0,
+  TOP: 0,
+  BOTTOM: canvas.height,
+  CENTERX: canvas.width / 2,
+  CENTERY: canvas.height / 2
+};
 let mod = 0;
-// function setSizeofCanvas() {
-//   //TODO: gonna need some way to reload game on every change of size
-//   canvasContainer.style.width = innerWidth;
-//   canvasContainer.style.height = innerHeight;
-//   canvas.width = window.innerWidth;
-//   canvas.height = window.innerHeight;
-// }
+export function setSizeofCanvas() {
+  //TODO: gonna need some way to reload game on every change of size
+  canvasContainer.style.width = innerWidth;
+  canvasContainer.style.height = innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.imageSmoothingEnabled = false;
+}
 export default class Engine {
   private preload: EngineConfig["preload"];
   private update: EngineConfig["update"];
@@ -57,8 +67,8 @@ export default class Engine {
     this.setup();
     keysHandles();
     mouseHandlers(canvas, cameraObjects.get("main"));
-    this.loop();
     this.fps ? this.meter.show() : this.meter.hide();
+    this.loop();
   };
 
   private loop() {

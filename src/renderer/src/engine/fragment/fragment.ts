@@ -43,15 +43,15 @@ export default class Fragment {
     //e[name]() - escape hatch to avoid ts protected error,
     //it is the only place where i will be using this functions,
     //and it's better as protected so it cannot be accesed and invoke from user components
-    this.visible && this.attachedPlugins.forEach((e) => e["render"]());
+    this.visible && this.attachedPlugins.forEach((e) => e["render"] && e["render"]());
   }
   update() {
-    this.updated && this.attachedPlugins.forEach((e) => e["update"]());
+    this.updated && this.attachedPlugins.forEach((e) => e["update"] && e["update"]());
     if (this.distanceToTarget && this.tags.includes(this.distanceToTarget.tag))
       this.distanceToTarget.distance = this.getDistance(this.distanceToTarget.fragment);
   }
   setup() {
-    this.attachedPlugins.forEach((e) => e["setup"]());
+    this.attachedPlugins.forEach((e) => e["setup"] && e["setup"]());
     if (this.distanceToTarget) {
       this.distanceToTarget.fragment = this.setTargetToDIstanceCheck(this.distanceToTarget.tag);
     }

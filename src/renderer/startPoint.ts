@@ -3,6 +3,7 @@ import Tester from "./src/engine/components/tester";
 import Chest from "./src/engine/components/chest";
 import Player from "./src/engine/components/player";
 import Camera from "./src/engine/components/camera";
+import Inventory from "./src/engine/components/inventory";
 function preload() {}
 function setup() {
   // let xx = 0;
@@ -83,6 +84,8 @@ function setup() {
     pos: { x: 120, y: 500 },
     size: { width: 80, height: 80 }
   });
+  new Inventory();
+
   cameraObjects.get("main")?.setZoom(1);
   cameraObjects.forEach((e) => e.setup());
   gameObjects.forEach((e) => e.setup());
@@ -99,6 +102,7 @@ function render() {
   cameraObjects.get("main")?.off();
   uiObjects.forEach((e) => e.render());
   cameraObjects.get("main")?.on();
+  // console.log(uiObjects);
 }
 
 const config: EngineConfig = {

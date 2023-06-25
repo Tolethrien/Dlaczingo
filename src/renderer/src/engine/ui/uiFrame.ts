@@ -1,16 +1,22 @@
+import { uiObjects } from "../main/engine";
 import Vec2D from "../main/vec2D";
+import DynamicGrid from "./dynamicGrid";
 
-interface SetGridProps {
-  numberOfCols: number;
-  numberOfRows: number;
-  startPoint: { x: number; y: number; relatedTo?: Vec2DType };
-  sizeOfElement: { width: number; height: number };
-  gap: { x: number; y: number };
-}
+type UIType = "static" | "dynamic";
+
 export default class UIFrame {
-  constructor() {}
-
-  createGrid<T>(cl: new (...args: any) => T, options: SetGridProps): T[] {
+  type: UIType;
+  constructor({ type }: { type: UIType }) {
+    this.type = type;
+    this.type === "static" && uiObjects.push(this);
+  }
+  displayDynamicFrame(value: boolean) {
+    if (this.type === "dynamic" && !value) {
+      const index = uiObjects.findLastIndex((element) => element === this);
+      uiObjects.splice(index, 1);
+    } else uiObjects.push(this);
+  }
+  static createSimpleGrid<T>(cl: new (...args: any) => T, options: StaticGridConfiguration): T[] {
     const grid: T[] = [];
     let col = 0;
     let row = 0;
@@ -37,11 +43,10 @@ export default class UIFrame {
       });
     return grid;
   }
-  addToGrid() {}
+  static createDynamicGrid<T extends FragmentType>(
+    component: new (...args: any) => T,
+    config: DynamicGridConfiguration
+  ) {
+    return new DynamicGrid<T>(component, config);
+  }
 }
-/**
- * grid templaty: no wiec grid template bedzie zapisywal sie w arrayu templatow
- * i potem bedziesz mogl go uzywac z arrey w formie use template(klasa, ilosc sztuk)
- * dzieki czemu bedziesz mogl dodawac usuwac itp lepiej bo masz wszystkie info w arrayu
- *
- */

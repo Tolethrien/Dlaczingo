@@ -1,6 +1,7 @@
 import Fragment from "./src/engine/fragment/fragment";
-import UIElement from "./src/engine/ui/uiElement";
+import { ClipShape } from "./src/engine/main/shapes";
 import Vec2D from "./src/engine/main/vec2D";
+import DynamicGrid from "./src/engine/ui/dynamicGrid";
 export declare global {
   interface EngineConfig {
     update: () => void;
@@ -18,7 +19,8 @@ export declare global {
   }
 
   interface FragmentType extends Fragment {}
-  interface UIElementType extends UIElement {}
+  interface UIFrameType extends UIFrame {}
+  interface DynamicGridType<T> extends DynamicGrid<T> {}
   interface FragmentProps {
     pos: { x: number; y: number };
     size: { width: number; height: number };
@@ -60,4 +62,20 @@ export declare global {
     round?: number;
     stroke?: { size: number; color: [number, number, number] };
   }
+  interface StaticGridConfiguration {
+    numberOfCols: number;
+    numberOfRows: number;
+    startPoint: { x: number; y: number; relatedTo?: Vec2DType };
+    sizeOfElement: { width: number; height: number };
+    gap: { x: number; y: number };
+  }
+  interface DynamicGridConfiguration {
+    maxRows: number;
+    maxItems?: number;
+    startPoint: { x: number; y: number; relatedTo?: Vec2DType };
+    sizeOfElement: { width: number; height: number };
+    gap: { x: number; y: number };
+    numberOfItems: number;
+  }
+  interface ClipShapeType extends ClipShape {}
 }
