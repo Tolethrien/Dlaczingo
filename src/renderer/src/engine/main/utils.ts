@@ -28,3 +28,12 @@ export const loadFont = () => {
   return new FontFace("test", "url(x)");
 };
 //=====================================
+export const mapRange = (
+  value: number,
+  inputMin: number,
+  inputMax: number,
+  outputMin: number,
+  outputMax: number
+) => {
+  return outputMin + ((value - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin);
+};

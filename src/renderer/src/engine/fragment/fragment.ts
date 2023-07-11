@@ -20,6 +20,7 @@ export default class Fragment {
     fragment: FragmentType | undefined;
   };
   protected relatedTo?: Vec2DType;
+  relatedPosition?: Vec2DType;
   constructor({ pos, size, layer, targetDistanceMessuring, tags, relatedTo }: FragmentProps) {
     this.position = new Vec2D(pos.x, pos.y);
     this.size = new Vec2D(size.width, size.height);
@@ -29,13 +30,17 @@ export default class Fragment {
     this.layer = layer;
     this.tags = tags;
     this.id = createRandomId();
-    relatedTo && (this.relatedTo = relatedTo);
-    targetDistanceMessuring &&
-      (this.distanceToTarget = {
+    if (relatedTo) {
+      this.relatedTo = relatedTo;
+      this.relatedPosition = new Vec2D(relatedTo.get().x + pos.x, relatedTo.get().y + pos.y);
+    }
+    if (targetDistanceMessuring) {
+      this.distanceToTarget = {
         tag: targetDistanceMessuring,
         fragment: undefined,
         distance: undefined
-      });
+      };
+    }
     this.layer === "gameObjects" ? gameObjects.push(this) : mapObjects.push(this);
   }
 
@@ -43,15 +48,21 @@ export default class Fragment {
     //e[name]() - escape hatch to avoid ts protected error,
     //it is the only place where i will be using this functions,
     //and it's better as protected so it cannot be accesed and invoke from user components
-    this.visible && this.attachedPlugins.forEach((e) => e["render"] && e["render"]());
+    this.visible && this.attachedPlugins.forEach((e) => e["render"]?.());
   }
   update() {
-    this.updated && this.attachedPlugins.forEach((e) => e["update"] && e["update"]());
+    if (this.relatedTo) {
+      this.relatedPosition?.set(
+        this.relatedTo.getRound().x + this.position.getRound().x,
+        this.relatedTo.getRound().y + this.position.getRound().y
+      );
+    }
+    this.updated && this.attachedPlugins.forEach((e) => e["update"]?.());
     if (this.distanceToTarget && this.tags.includes(this.distanceToTarget.tag))
       this.distanceToTarget.distance = this.getDistance(this.distanceToTarget.fragment);
   }
   setup() {
-    this.attachedPlugins.forEach((e) => e["setup"] && e["setup"]());
+    this.attachedPlugins.forEach((e) => e["setup"]?.());
     if (this.distanceToTarget) {
       this.distanceToTarget.fragment = this.setTargetToDIstanceCheck(this.distanceToTarget.tag);
     }
@@ -60,13 +71,13 @@ export default class Fragment {
   attachPlugin(plugin: PluginListT, options?: { bindThis?: boolean; overrideName?: string }) {
     this.attachedPlugins.push(
       new pluginList[nameToUpper(plugin)]({
-        position: this.position,
+        position: this.relatedTo ? this.relatedPosition : this.position,
         size: this.size,
         layer: this.layer,
         id: this.id,
         siblings: this.attachedPlugins,
         referanceName: options?.overrideName ? options.overrideName : plugin,
-        relatedTo: this.relatedTo
+        relatedTo: { parent: this.relatedTo, offset: this.position }
       })
     );
     if (options?.bindThis !== false) {

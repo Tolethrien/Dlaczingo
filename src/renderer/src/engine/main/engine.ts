@@ -11,7 +11,7 @@ export let fixedTime = 0;
 export const canvasContainer = document.getElementById("CanvasContainer")!;
 const loadingScreen = document.getElementById("loadingScreen")!;
 export const canvas = document.getElementById("gameWindow") as HTMLCanvasElement;
-export const ctx = canvas.getContext("2d")!;
+export const ctx = canvas.transferControlToOffscreen().getContext("2d")!;
 const messureTime = document.getElementById("fps-output");
 messureTime!.innerText = String(0);
 export const gameObjects: FragmentType[] = [];
@@ -19,6 +19,7 @@ export const mapObjects: FragmentType[] = [];
 export const uiObjects: UIFrame[] = [];
 export const cameraObjects: Map<string, CameraType> = new Map();
 // setSizeofCanvas();
+
 export const canvasBox = {
   RIGHT: canvas.width,
   LEFT: 0,

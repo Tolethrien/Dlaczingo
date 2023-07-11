@@ -1,4 +1,4 @@
-import { cameraObjects, ctx } from "./engine";
+import { ctx } from "./engine";
 export interface ShapeSprite {
   sprite: ImageFileType;
   position: Vec2DType;
@@ -24,11 +24,11 @@ export interface ShapeRect {
   round?: number;
   stroke?: { size: number; color: [number, number, number] };
 }
-export function renderSprite({ sprite, position, size, relatedTo, offset }: ShapeSprite) {
+export function renderSprite({ sprite, position, size, offset }: ShapeSprite) {
   ctx.drawImage(
     sprite as HTMLImageElement,
-    (relatedTo ? relatedTo.getRound().x : 0) + position.getRound().x + (offset ? offset.x : 0),
-    (relatedTo ? relatedTo.getRound().y : 0) + position.getRound().y + (offset ? offset.y : 0),
+    position.getRound().x + (offset ? offset.x : 0),
+    position.getRound().y + (offset ? offset.y : 0),
     size.get().x + (offset ? offset.w : 0),
     size.get().y + (offset ? offset.h : 0)
   );
@@ -40,8 +40,7 @@ export function renderSpriteSheet({
   position,
   size,
   spritesheet,
-  offset,
-  relatedTo
+  offset
 }: ShapeSpritesheet) {
   ctx.drawImage(
     spritesheet as HTMLImageElement,
@@ -49,26 +48,20 @@ export function renderSpriteSheet({
     crop.y,
     cropSize.width,
     cropSize.height,
-    (relatedTo ? relatedTo.getRound().x : 0) + position.getRound().x + (offset ? offset.x : 0),
-    (relatedTo ? relatedTo.getRound().y : 0) + position.getRound().y + (offset ? offset.y : 0),
+    position.getRound().x + (offset ? offset.x : 0),
+    position.getRound().y + (offset ? offset.y : 0),
     size.get().x + (offset ? offset.w : 0),
     size.get().y + (offset ? offset.h : 0)
   );
 }
 
-export function renderRect({ fill, position, size, offset, relatedTo, round, stroke }: ShapeRect) {
+export function renderRect({ fill, position, size, offset, round, stroke }: ShapeRect) {
   ctx.beginPath();
   if (fill?.color) {
     ctx.fillStyle = `rgba(${fill.color}, ${fill.alpha ?? 1})`;
     ctx.roundRect(
-      (relatedTo ? relatedTo.getRound().x : 0) +
-        position.getRound().x +
-        (offset ? offset.x : 0) +
-        (stroke ? 1 : 0),
-      (relatedTo ? relatedTo.getRound().y : 0) +
-        position.getRound().y +
-        (offset ? offset.y : 0) +
-        (stroke ? 1 : 0),
+      position.getRound().x + (offset ? offset.x : 0) + (stroke ? 1 : 0),
+      position.getRound().y + (offset ? offset.y : 0) + (stroke ? 1 : 0),
       size.get().x + (offset ? offset.w : 0) - (stroke ? 2 : 0),
       size.get().y + (offset ? offset.h : 0) - (stroke ? 2 : 0),
       round ?? 0
@@ -80,14 +73,8 @@ export function renderRect({ fill, position, size, offset, relatedTo, round, str
     ctx.lineWidth = stroke.size;
     ctx.strokeStyle = `rgba(${stroke.color})`;
     ctx.roundRect(
-      (relatedTo ? relatedTo.getRound().x : 0) +
-        position.getRound().x +
-        (offset ? offset.x : 0) +
-        stroke.size / 2,
-      (relatedTo ? relatedTo.getRound().y : 0) +
-        position.getRound().y +
-        (offset ? offset.y : 0) +
-        stroke.size / 2,
+      position.getRound().x + (offset ? offset.x : 0) + stroke.size / 2,
+      position.getRound().y + (offset ? offset.y : 0) + stroke.size / 2,
       size.get().x + (offset ? offset.w : 0) - stroke.size,
       size.get().y + (offset ? offset.h : 0) - stroke.size,
       round ?? 0
@@ -104,7 +91,7 @@ interface ShapeDebugFrame {
   relatedTo?: Vec2DType;
   offset?: { x: number; y: number; w: number; h: number };
 }
-export function renderDebugerFrame({ position, size, text, offset, relatedTo }: ShapeDebugFrame) {
+export function renderDebugerFrame({ position, size, text, offset }: ShapeDebugFrame) {
   ctx.beginPath();
   ctx.lineWidth = 2;
   //stroke
@@ -112,23 +99,15 @@ export function renderDebugerFrame({ position, size, text, offset, relatedTo }: 
   //dot
   ctx.fillStyle = "rgb(0, 255, 0)";
   ctx.roundRect(
-    (relatedTo ? relatedTo.getRound().x : 0) + position.getRound().x + (offset ? offset.x : 0),
-    (relatedTo ? relatedTo.getRound().y : 0) + position.getRound().y + (offset ? offset.y : 0),
+    position.getRound().x + (offset ? offset.x : 0),
+    position.getRound().y + (offset ? offset.y : 0),
     size.get().x + (offset ? offset.w : 0) - 2,
     size.get().y + (offset ? offset.h : 0) - 2,
     0
   );
   ctx.fillRect(
-    (relatedTo ? relatedTo.getRound().x : 0) +
-      position.getRound().x +
-      (offset ? offset.x : 0) +
-      size.get().x / 2 -
-      1,
-    (relatedTo ? relatedTo.getRound().y : 0) +
-      position.getRound().y +
-      (offset ? offset.y : 0) +
-      size.get().y / 2 -
-      1,
+    position.getRound().x + (offset ? offset.x : 0) + size.get().x / 2 - 1,
+    position.getRound().y + (offset ? offset.y : 0) + size.get().y / 2 - 1,
     2,
     2
   );
@@ -136,12 +115,8 @@ export function renderDebugerFrame({ position, size, text, offset, relatedTo }: 
   ctx.font = `${size.get().x / 2 - size.get().x / 4}px Arial`;
   ctx.fillText(
     text,
-    (relatedTo ? relatedTo.getRound().x : 0) + position.getRound().x + (offset ? offset.x : 0) + 4,
-    (relatedTo ? relatedTo.getRound().y : 0) +
-      position.getRound().y +
-      (offset ? offset.y : 0) +
-      size.get().x / 2 -
-      size.get().x / 4,
+    position.getRound().x + (offset ? offset.x : 0) + 4,
+    position.getRound().y + (offset ? offset.y : 0) + size.get().x / 2 - size.get().x / 4,
     size.get().x - size.get().x / 8
   );
   ctx.closePath();
@@ -155,27 +130,13 @@ export interface ShapeCircle {
   fill?: { color: [number, number, number]; alpha?: number };
   stroke?: { size: number; color: [number, number, number] };
 }
-export function renderCircle({
-  position,
-  radius,
-  fill,
-  stroke,
-  relatedTo,
-  offset,
-  size
-}: ShapeCircle) {
+export function renderCircle({ position, radius, fill, stroke, offset, size }: ShapeCircle) {
   ctx.beginPath();
   fill && (ctx.fillStyle = `rgba(${fill.color},${fill.alpha ?? 1})`);
   stroke && (ctx.strokeStyle = `rgba(${stroke.color},1)`);
   ctx.ellipse(
-    (relatedTo ? relatedTo.getRound().x : 0) +
-      position.getRound().x +
-      size.get().x / 2 +
-      (offset ? offset.x : 0),
-    (relatedTo ? relatedTo.getRound().y : 0) +
-      position.getRound().y +
-      size.get().y / 2 +
-      (offset ? offset.y : 0),
+    position.getRound().x + size.get().x / 2 + (offset ? offset.x : 0),
+    position.getRound().y + size.get().y / 2 + (offset ? offset.y : 0),
     radius,
     radius,
     0,
@@ -198,7 +159,6 @@ export class ClipShape {
     ctx.restore();
   }
   newPath(type: "rect" | "ellipse", shape: { x: number; y: number; w: number; h: number }) {
-    console.log(this.region);
     type === "rect"
       ? this.region.rect(shape.x, shape.y, shape.w, shape.h)
       : this.region.ellipse(shape.x, shape.y, shape.w, shape.h, 0, 0, 2 * Math.PI);

@@ -59,8 +59,12 @@ export function mouseHandlers(canvas: HTMLCanvasElement, camera?: CameraType) {
       }
     }
   };
-  canvas.onmousedown = () => (mousePressed = true);
-  canvas.onmouseup = () => (mousePressed = false);
+  canvas.onmousedown = (event) => {
+    mousePressed = true;
+  };
+  canvas.onmouseup = () => {
+    mousePressed = false;
+  };
 
   if (!camera) {
     canvas.addEventListener("mousemove", (event) => {

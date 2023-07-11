@@ -12,13 +12,13 @@ export default class Textbox extends Fragment {
       fontSize: 18,
       fontWeight: 900,
       align: { Xaxis: "left", Yaxis: "top" },
-      color: [50, 50, 50],
+      color: [250, 250, 250],
       offset: { x: 0, y: 0 },
       padding: { left: 10, right: 10, top: 0, bottom: 0 },
       box: { width: this.size.get().x, height: this.size.get().y },
       overflow: "scroll-visible"
     });
-    // this.textRendering.debug = true;
+    this.textRendering.debug = true;
   }
   update() {
     // this.textRendering.position.add([0, -1]);

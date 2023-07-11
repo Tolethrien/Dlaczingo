@@ -3,8 +3,10 @@ import Tester from "./src/engine/components/tester";
 import Chest from "./src/engine/components/chest";
 import Player from "./src/engine/components/player";
 import Camera from "./src/engine/components/camera";
-import Inventory from "./src/engine/components/inventory";
+import Gridd from "./src/engine/uiDiv/gridd";
+import Invent from "./src/engine/uiDiv/invent";
 function preload() {}
+const eleme = new Invent();
 function setup() {
   // let xx = 0;
   // let yy = 0;
@@ -17,12 +19,14 @@ function setup() {
   //       console.log(yy);
   //     }
   //     xx++;
-  //     new Tester({
+
+  //     new Chest({
   //       layer: "gameObjects",
   //       tags: ["front"],
   //       targetDistanceMessuring: "gameObject_player",
-  //       pos: { x: xx * 11, y: yy * 11 },
-  //       size: { width: 10, height: 10 }
+  //       pos: { x: xx * 11, y: yy * 8 },
+  //       size: { width: 15, height: 15 }
+  //       // relatedTo: new Vec2D(0, 0)
   //     });
   //   });
   new Chest({
@@ -84,16 +88,18 @@ function setup() {
     pos: { x: 120, y: 500 },
     size: { width: 80, height: 80 }
   });
-  new Inventory();
-
-  cameraObjects.get("main")?.setZoom(1);
+  // new Inventory();
+  cameraObjects.get("main")?.setZoom(1.2452);
   cameraObjects.forEach((e) => e.setup());
   gameObjects.forEach((e) => e.setup());
   uiObjects.forEach((e) => e.setup());
+  eleme.setup();
 }
 function update() {
+  gameObjects.sort((a, b) => a.position.get().y - b.position.get().y);
   gameObjects.forEach((e) => e.update());
   uiObjects.forEach((e) => e.update());
+  eleme.update();
 }
 function render() {
   cameraObjects.get("main")?.start();
@@ -101,6 +107,7 @@ function render() {
   gameObjects.forEach((e) => e.render());
   cameraObjects.get("main")?.off();
   uiObjects.forEach((e) => e.render());
+  eleme.render();
   cameraObjects.get("main")?.on();
   // console.log(uiObjects);
 }

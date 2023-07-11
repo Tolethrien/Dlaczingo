@@ -69,10 +69,7 @@ export default class Camera extends Fragment {
 
   start() {
     this.type === "follow" ? this.cameraFollow() : this.cameraFree();
-    ctx.translate(
-      -Math.round(this.position.getRound().x) / this.zoom,
-      -Math.round(this.position.getRound().y) / this.zoom
-    );
+    ctx.translate(-this.position.getRound().x / this.zoom, -this.position.getRound().y / this.zoom);
   }
   private cameraFollow() {
     this.movementRestriction ? this.movementRestriction.boundCamera() : this.noneRestrictedcamera();

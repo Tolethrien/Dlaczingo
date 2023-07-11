@@ -1,6 +1,7 @@
 import { ctx } from "../../main/engine";
 import { getMousePosition, mouseDelta } from "../../main/inputHandlers";
 import { ClipShape, renderRect } from "../../main/shapes";
+import { mapRange } from "../../main/utils";
 import Vec2D from "../../main/vec2D";
 import Plugin from "./plugin";
 type AlignX = "left" | "center" | "right";
@@ -62,13 +63,49 @@ export default class TextRendering extends Plugin {
   setup() {
     if (this.textConfig === undefined) throw new Error("Text renderer no display");
   }
+
   render() {
     if (this.visible) {
       this.debug && this.renderTextBorder();
+      if (this.textConfig.overflow && this.textConfig.overflow === "scroll-visible") {
+        renderRect({
+          fill: { color: [0, 0, 0], alpha: this.debugColors.xAxis.alpha },
+          position: this.position,
+          size: new Vec2D(20, this.textConfig.box.height),
+          offset: {
+            x: this.textConfig.box.width - 20,
+            y: 0,
+            w: 0,
+            h: 0
+          }
+        });
+        renderRect({
+          fill: { color: [250, 250, 250], alpha: this.debugColors.xAxis.alpha },
+          position: this.position,
+          size: new Vec2D(14, 40),
+          offset: {
+            x: this.textConfig.box.width - 20 + 3,
+            y:
+              mapRange(
+                Math.abs(this.scrollYoffset),
+                0,
+                this.wrappedLinesData[this.wrappedLinesData.length - 1].offsetY +
+                  (this.textConfig.fontSize + this.verticalSpacing) -
+                  this.textConfig.box.height +
+                  (this.textConfig.padding.bottom + this.textConfig.padding.top),
+                40,
+                this.textConfig.box.height
+              ) - 40,
+            w: 0,
+            h: 0
+          }
+        });
+      }
       ctx.fillStyle = `rgba(${this.textConfig.color},1)`;
       ctx.font = `${this.textConfig.fontWeight} ${this.textConfig.fontSize}px ${this.textConfig.font}`;
       ctx.textAlign = this.alignment.x.textAlign[this.textConfig.align.Xaxis];
       ctx.textBaseline = this.textConfig.align.Yaxis;
+
       if (
         this.textConfig.overflow &&
         (this.textConfig.overflow === "hidden" ||
@@ -79,12 +116,10 @@ export default class TextRendering extends Plugin {
         this.wrappedLinesData.forEach((line) =>
           ctx.fillText(
             line.text,
-            (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-              this.position.getRound().x +
+            this.position.getRound().x +
               (this.textConfig.offset.x ? this.textConfig.offset.x : 0) +
               this.alignment.x.widthAlign[this.textConfig.align.Xaxis],
-            (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-              this.position.getRound().y +
+            this.position.getRound().y +
               (this.textConfig.offset ? this.textConfig.offset.y : 0) +
               this.alignment.y.line[this.textConfig.align.Yaxis] +
               line.offsetY -
@@ -97,12 +132,10 @@ export default class TextRendering extends Plugin {
         this.wrappedLinesData.forEach((line) =>
           ctx.fillText(
             line.text,
-            (this.relatedTo ? this.relatedTo.getRound().x : 0) +
-              this.position.getRound().x +
+            this.position.getRound().x +
               (this.textConfig.offset.x ? this.textConfig.offset.x : 0) +
               this.alignment.x.widthAlign[this.textConfig.align.Xaxis],
-            (this.relatedTo ? this.relatedTo.getRound().y : 0) +
-              this.position.getRound().y +
+            this.position.getRound().y +
               (this.textConfig.offset ? this.textConfig.offset.y : 0) +
               this.alignment.y.line[this.textConfig.align.Yaxis] +
               line.offsetY -
@@ -256,14 +289,10 @@ export default class TextRendering extends Plugin {
   }
   private mouseCollide() {
     return (
-      getMousePosition(this.mousePositionType).x >=
-        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x &&
-      getMousePosition(this.mousePositionType).x <=
-        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x + this.size.get().x &&
-      getMousePosition(this.mousePositionType).y >=
-        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y &&
-      getMousePosition(this.mousePositionType).y <=
-        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y + this.size.get().y &&
+      getMousePosition(this.mousePositionType).x >= this.position.get().x &&
+      getMousePosition(this.mousePositionType).x <= this.position.get().x + this.size.get().x &&
+      getMousePosition(this.mousePositionType).y >= this.position.get().y &&
+      getMousePosition(this.mousePositionType).y <= this.position.get().y + this.size.get().y &&
       true
     );
   }
@@ -299,24 +328,10 @@ export default class TextRendering extends Plugin {
   }
 
   private renderTextBorder() {
-    if (this.textConfig.overflow && this.textConfig.overflow === "scroll-visible")
-      renderRect({
-        fill: { color: [0, 0, 0], alpha: this.debugColors.xAxis.alpha },
-        position: this.position,
-        relatedTo: this.relatedTo,
-        size: new Vec2D(20, this.textConfig.box.height),
-        offset: {
-          x: this.textConfig.box.width - 20,
-          y: 0,
-          w: 0,
-          h: 0
-        }
-      });
     if (this.textConfig.padding.left > 0)
       renderRect({
         fill: { color: this.debugColors.xAxis.color, alpha: this.debugColors.xAxis.alpha },
         position: this.position,
-        relatedTo: this.relatedTo,
         size: new Vec2D(this.textConfig.padding.left, this.textConfig.box.height),
         offset: {
           x: this.textConfig.offset ? this.textConfig.offset.x : 0,
@@ -329,7 +344,6 @@ export default class TextRendering extends Plugin {
       renderRect({
         fill: { color: this.debugColors.xAxis.color, alpha: this.debugColors.xAxis.alpha },
         position: this.position,
-        relatedTo: this.relatedTo,
         size: new Vec2D(this.textConfig.padding.right, this.textConfig.box.height),
         offset: {
           x:
@@ -346,7 +360,6 @@ export default class TextRendering extends Plugin {
       renderRect({
         fill: { color: this.debugColors.yAxis.color, alpha: this.debugColors.yAxis.alpha },
         position: this.position,
-        relatedTo: this.relatedTo,
         size: new Vec2D(this.textConfig.box.width, this.textConfig.padding.top),
         offset: {
           x: this.textConfig.offset ? this.textConfig.offset.x : 0,
@@ -359,7 +372,6 @@ export default class TextRendering extends Plugin {
       renderRect({
         fill: { color: this.debugColors.yAxis.color, alpha: this.debugColors.yAxis.alpha },
         position: this.position,
-        relatedTo: this.relatedTo,
         size: new Vec2D(this.textConfig.box.width, this.textConfig.padding.bottom),
         offset: {
           x: this.textConfig.offset ? this.textConfig.offset.x : 0,
@@ -374,7 +386,6 @@ export default class TextRendering extends Plugin {
     renderRect({
       stroke: { color: this.debugColors.border, size: 2 },
       position: this.position,
-      relatedTo: this.relatedTo,
       size: new Vec2D(this.textConfig.box.width, this.textConfig.box.height),
       offset: {
         x: this.textConfig.offset ? this.textConfig.offset.x : 0,

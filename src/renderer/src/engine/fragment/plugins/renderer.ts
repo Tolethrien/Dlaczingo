@@ -1,8 +1,7 @@
-import { ctx } from "../../main/engine";
 import { renderDebugerFrame, renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
 import Plugin from "./plugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
-type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
+export type displayConfig = SpriteConfiguration | SpritesheetConfiguration | ShapeConfiguration;
 interface SpriteConfiguration {
   sprite: ImageFileType;
   debugText: string | number;
@@ -44,7 +43,7 @@ export default class Renderer extends Plugin {
         renderRect({
           position: this.position,
           size: this.size,
-          relatedTo: this.relatedTo,
+          offset: this.offset,
           ...this.renderConfig
         } as ShapeRect);
         break;
@@ -52,7 +51,7 @@ export default class Renderer extends Plugin {
         renderSprite({
           position: this.position,
           size: this.size,
-          relatedTo: this.relatedTo,
+          offset: this.offset,
           ...this.renderConfig
         } as ShapeSprite);
         break;
@@ -60,7 +59,7 @@ export default class Renderer extends Plugin {
         renderSpriteSheet({
           position: this.position,
           size: this.size,
-          relatedTo: this.relatedTo,
+          offset: this.offset,
           ...this.renderConfig
         } as ShapeSpritesheet);
         break;
@@ -70,12 +69,11 @@ export default class Renderer extends Plugin {
         position: this.position,
         size: this.size,
         offset: this.offset,
-        relatedTo: this.relatedTo,
         text: this.renderConfig.debugText as string
       });
   }
 
-  change(props: displayConfig) {
+  change(props: Partial<displayConfig>) {
     this.renderConfig = { ...this.renderConfig, ...props };
   }
   setup() {

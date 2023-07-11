@@ -16,7 +16,7 @@ export declare global {
     siblings: Plugin[];
     layer: FragmentLayer;
     referanceName: string;
-    relatedTo: Vec2DType;
+    relatedTo?: { parent: Vec2DType; offset: Vec2DType };
   }
   type PluginListT = Uncapitalize<keyof typeof pluginList>;
   interface RendererType extends Renderer {}

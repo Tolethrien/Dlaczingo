@@ -1,5 +1,4 @@
 import { nameToUpper } from "../../main/utils";
-import { Vec2DType } from "../../main/vec2D";
 
 export default abstract class Plugin {
   position: Vec2DType;
@@ -7,7 +6,7 @@ export default abstract class Plugin {
   protected siblings: Plugin[];
   layer: FragmentProps["layer"];
   referanceName: string;
-  relatedTo?: Vec2DType;
+  relatedTo?: { parent: Vec2DType; offset: Vec2DType };
 
   constructor({ position, size, siblings, layer, referanceName, relatedTo }: PluginProps) {
     this.position = position;

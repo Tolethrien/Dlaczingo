@@ -1,4 +1,3 @@
-import { ctx } from "../../main/engine";
 import { renderDebugerFrame, renderRect, renderSprite, renderSpriteSheet } from "../../main/shapes";
 import Plugin from "./plugin";
 type DisplayT = "shape" | "sprite" | "spritesheet";
@@ -48,7 +47,6 @@ export default class MultiRenderer extends Plugin {
           renderRect({
             position: this.position,
             size: this.size,
-            relatedTo: this.relatedTo,
             ...e.config
           } as ShapeRect);
           break;
@@ -56,7 +54,6 @@ export default class MultiRenderer extends Plugin {
           renderSprite({
             position: this.position,
             size: this.size,
-            relatedTo: this.relatedTo,
             ...e.config
           } as ShapeSprite);
           break;
@@ -64,7 +61,6 @@ export default class MultiRenderer extends Plugin {
           renderSpriteSheet({
             position: this.position,
             size: this.size,
-            relatedTo: this.relatedTo,
             ...e.config
           } as ShapeSpritesheet);
           break;
@@ -74,7 +70,6 @@ export default class MultiRenderer extends Plugin {
           position: this.position,
           size: this.size,
           offset: e.config.offset,
-          relatedTo: this.relatedTo,
           text: e.config.debugText as string
         });
     });

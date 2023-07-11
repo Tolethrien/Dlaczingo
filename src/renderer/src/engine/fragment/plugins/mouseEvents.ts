@@ -43,14 +43,10 @@ export default class MouseEvents extends Plugin {
 
   mouseCollide() {
     return (
-      getMousePosition(this.mousePositionType).x >=
-        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x &&
-      getMousePosition(this.mousePositionType).x <=
-        (this.relatedTo ? this.relatedTo.get().x : 0) + this.position.get().x + this.size.get().x &&
-      getMousePosition(this.mousePositionType).y >=
-        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y &&
-      getMousePosition(this.mousePositionType).y <=
-        (this.relatedTo ? this.relatedTo.get().y : 0) + this.position.get().y + this.size.get().y &&
+      getMousePosition(this.mousePositionType).x >= this.position.get().x &&
+      getMousePosition(this.mousePositionType).x <= this.position.get().x + this.size.get().x &&
+      getMousePosition(this.mousePositionType).y >= this.position.get().y &&
+      getMousePosition(this.mousePositionType).y <= this.position.get().y + this.size.get().y &&
       true
     );
   }

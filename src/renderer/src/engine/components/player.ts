@@ -73,7 +73,7 @@ export default class Player extends Fragment {
     });
     this.speed = 5;
     this.directionalMovement.setMovemmentSpeed(this.speed);
-    this.mouseEvents.addEvent("left", () => {});
+    this.mouseEvents.addEvent("left", () => console.log("plaer"));
     this.mouseEvents.addEvent("middle", () => console.log("midd"));
     this.mouseEvents.addEvent("right", () => console.log(gameObjects[1]));
     // new Inventory();
@@ -119,7 +119,7 @@ export default class Player extends Fragment {
             -(this.position.get().y - (target.position.get().y + target.size.get().y))
           ]);
         } else {
-          this.animator.changeState("top");
+          this.animator.changeAnimation("top");
           this.directionalMovement.ContinuousMove("N");
         }
       } else if (this.keyEvents.isKeyHolded("a") && this.keyEvents.isNotHolded(["d", "s", "w"])) {
@@ -134,7 +134,7 @@ export default class Player extends Fragment {
             0
           ]);
         } else {
-          this.animator.changeState("left");
+          this.animator.changeAnimation("left");
           this.directionalMovement.ContinuousMove("W");
         }
       } else if (this.keyEvents.isKeyHolded("s") && this.keyEvents.isNotHolded(["d", "a", "w"])) {
@@ -149,7 +149,7 @@ export default class Player extends Fragment {
             target.position.get().y - (this.position.get().y + this.size.get().y)
           ]);
         } else {
-          this.animator.changeState("down");
+          this.animator.changeAnimation("down");
           this.directionalMovement.ContinuousMove("S");
         }
       } else if (this.keyEvents.isKeyHolded("d") && this.keyEvents.isNotHolded(["a", "s", "w"])) {
@@ -164,7 +164,7 @@ export default class Player extends Fragment {
             0
           ]);
         } else {
-          this.animator.changeState("right");
+          this.animator.changeAnimation("right");
           this.directionalMovement.ContinuousMove("E");
         }
       } else if (this.keyEvents.isKeyHolded("w") && this.keyEvents.isKeyHolded("a")) {

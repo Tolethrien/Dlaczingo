@@ -41,14 +41,14 @@ export default class Inventory extends UIFrame {
       size: { width: 200, height: 200 },
       tags: []
     });
-    // this.tete = UIFrame.createDynamicGrid<SlotType>(Slot, {
-    //   maxRows: 6,
-    //   // maxItems: 12,
-    //   numberOfItems: 10,
-    //   gap: { x: 0, y: 0 },
-    //   sizeOfElement: { height: 55, width: 55 },
-    //   startPoint: { x: 200, y: 200 }
-    // });
+    this.tete = UIFrame.createDynamicGrid<SlotType>(Slot, {
+      maxRows: 6,
+      // maxItems: 12,
+      numberOfItems: 10,
+      gap: { x: 0, y: 0 },
+      sizeOfElement: { height: 55, width: 55 },
+      startPoint: { x: 200, y: 200 }
+    });
   }
 
   setup() {
@@ -63,15 +63,15 @@ export default class Inventory extends UIFrame {
   }
   update() {
     // this.visible && this.test.forEach((e) => e.update());
-    // this.visible && this.tete.grid.forEach((e) => e.update());
-    // this.healthBar.update();
-    this.position.add([0.5, 0]);
+    this.visible && this.tete.grid.forEach((e) => e.update());
+    this.healthBar.update();
+    // this.position.add([0.5, 0]);
     this.textbox.update();
   }
   render() {
     // this.visible && this.frame.render();
-    // this.tete.grid.forEach((e) => e.render());
-    // this.healthBar.render();
+    this.tete.grid.forEach((e) => e.render());
+    this.healthBar.render();
     // this.test.forEach((e) => e.render());
     this.textbox.render();
   }

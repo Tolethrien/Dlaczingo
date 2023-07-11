@@ -51,10 +51,11 @@ export default class Animator extends Plugin {
     this.animationData = data;
     this.state = Object.entries(data).find((e) => e[1].startAnimation)?.[0] ?? Object.keys(data)[0];
   }
-  /**animator updater! function controled by Fragment and game loop.
-   *  DO NOT invoke */
   update() {
     this.updateAnimation();
+  }
+  setAnimationSpeed(speed: number) {
+    this.animationSpeed = speed;
   }
   /**main update animation loop */
   private updateAnimation() {
@@ -107,7 +108,7 @@ export default class Animator extends Plugin {
     (this.rendererConfig as SpritesheetConfiguration).crop.x = 0;
   }
   /**changing animation */
-  changeState(newState: string) {
+  changeAnimation(newState: string) {
     if (this.state === newState) return;
     this.state = newState;
     this.rewind();
